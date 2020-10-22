@@ -1,4 +1,4 @@
-COPY C:\Users\user\effigyDataSync.ipynb C:\GIT_REPOSITORY\REPO\effigy\EffigySync
+
 git add *
 git status
 set dt = date /T
@@ -18,4 +18,4 @@ goto loop1
 echo %RESTVAR%
 
 git commit -m "%USERNAME% %date% %time% %RESTVAR%"
-git push 
+git push
