@@ -1,20 +1,10 @@
-<h3>Search News by Keyword. Caches for 30 seconds</h3>
-
-<!--
-<input id="name2" placeholder="Search"/>
-<input type="checkbox" id="refresh" [checked]="withRefresh" (click)="toggleRefresh()">
-<label for="refresh">with refresh</label>
--->
-
-
-
 <mat-form-field class="example-full-width">
-  <mat-label>Keyword Search</mat-label>
-  <input matInput placeholder="Stocks" value="market" id="name" (keyup)="search($event.target.value)">
+  <mat-label>My Search</mat-label>
+  <input matInput placeholder="Type Keyword..." value="" id="name" (keyup)="search($event.target.value)">
 </mat-form-field>
 <ul>
   <li *ngFor="let N of news$ | async">
-      <div class="myinline"><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}}-</i></div>
+      <div><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}} <br></i></div>
       <div class="myinline"><a target=_blank href={{N.ARTICLE_URL}}><div class="my-static-div" [innerHTML]='N.LABEL'></div></a></div>
       </li>
 </ul>

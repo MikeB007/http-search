@@ -107,3 +107,29 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 }
 
 .serviceBox:first-child { margin-left: 3% }
+
+
+
+img {
+  max-width:20%;
+  height:auto;
+}
+
+
+
+.outline {
+  color:red;
+}
+
+div:hover {
+  outline-width: 1px;
+  outline-style: dashed;
+  outline-color: red;
+}
+
+
+*.focus {
+  outline-width: 1px;
+  outline-style: dashed;
+  outline-color: red;
+}

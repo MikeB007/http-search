@@ -19,7 +19,7 @@ export interface NewsInfo {
 
 
 //export const searchUrl = 'https://npmsearch.com/query';
-export const searchUrl = 'http://107.190.108.55/api/news/search/';
+export const searchUrl = 'http://107.190.108.52/api/news/search/';
 
 
 

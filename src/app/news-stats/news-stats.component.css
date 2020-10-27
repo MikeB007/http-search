@@ -1,0 +1,13 @@
+.searchstyle3{
+  color: brown;
+}
+
+
+.my-static-div ::ng-deep .searchstyle2
+{ color: red;
+}
+
+
+.inline {
+  display: inline-block;
+}

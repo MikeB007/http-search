@@ -34,6 +34,7 @@ import { MyHTTPLoaderInterceptor } from './http-interceptors/loader-interceptor.
 import { NewsStatsComponent } from './news-stats/news-stats.component';
 import { NewsDashComponent } from './news-dash/news-dash.component';
 import { NewsNavComponent } from './news-nav/news-nav.component';
+import { UnderConstructionComponent } from './under-construction/under-construction.component';
 
 
 @NgModule({
@@ -73,6 +74,7 @@ import { NewsNavComponent } from './news-nav/news-nav.component';
     NewsStatsComponent,
     NewsDashComponent,
     NewsNavComponent,
+    UnderConstructionComponent,
   ],
   providers: [
     AuthService,
