@@ -1,15 +1,20 @@
+ <div class ="container-fluid">
 
-<div class="container" style="margin-left:10px;margin-right:10px;">
-  <div class="container">
+  <div class="row">
+    <div class="col" style="color:green;">
       <app-news-nav></app-news-nav>
+    </div>
   </div>
-  <div class="container"> <br><br>
+
+  <div class="row">
+    <div class="col" style="color:green;">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col" style="color:green;">
+        <app-messages></app-messages>
+    </div>
   </div>
 </div>
-
-<div class="container-fluid" style="margin-left:10px;margin-top:70px;">
-    <app-news-dash></app-news-dash>
-</div>
-
-
 <app-my-spinner></app-my-spinner>

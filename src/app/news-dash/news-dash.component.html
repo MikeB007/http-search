@@ -1,50 +1,16 @@
-<!--
-<div class="container">
-  <div class="row">
-    <div class="col-lg">
-      <app-news-search *ngIf="true"></app-news-search>
-    </div>
-    <div class="col-sm">
-      <app-news-stats *ngIf="true"></app-news-stats>
 
-    </div>
-  </div>
-</div>
-
-<div class="container">
-  <div class="container-fluid">
-      <app-news-search *ngIf="true"></app-news-search>
-  </div>
-  <div class="container-fluid">
-      <app-news-stats *ngIf="false"></app-news-stats>
-  </div>
-</div>
--->
-
-<div class ="container-fluid">
+  <div class ="container-fluid">
     <div class="row">
-      <div class="col" style="color:green;">
+        <div class="col">
+            <div class="container-fluid">
+              <app-news-search *ngIf="true"></app-news-search>
+            </div>
+        </div>
+        <div class="col">
           <div class="container-fluid">
-           <app-news-search *ngIf="true"></app-news-search>
+             <app-news-stats *ngIf="true"></app-news-stats>
           </div>
-      </div>
-      <div class="col" >
-          <div class="container-fluid">
-            <app-news-stats *ngIf="true"></app-news-stats>
-            <div class="outline">test</div>
-          </div>
-      </div>
+        </div>
     </div>
   </div>
 
-  <div class="outline">test</div>
-
-  <!--
-<div>
-  <div class="h2" >Training</div>
-  <div class ="container">first div</div>
-  <div class ="container-fluid">second  div</div>
-  <div class ="container bg-primary">first div</div>
-  <div class ="container-fluid bg-warning">first div</div>
-</div>
--->

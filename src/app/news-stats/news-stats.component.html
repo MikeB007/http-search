@@ -1,10 +1,16 @@
-<p>news-stats works!</p>
-test
-<!--
 <h1 style="text-align:center">Stats</h1>
+
+<div class="grid grid-pad">
+  <a *ngFor="let N of stats" class="col-1-4"
+      routerLink="/source/{{N.SRC}}">
+    <div class="myinline">
+      <h4>{{" " + N.SRC}}-{{N.Total}}</h4>
+    </div>
+  </a>
+
 <ul>
-  <li *ngFor="let N of stats | async">
-      <div class="myinline"><i>{{N.SRC}} - {{N.count}}</i> </div>
+  <li *ngFor="let N of stats ">
+      <div class="myinline"><i>{{N.SRC}} - {{N.Total}}</i> </div>
   </li>
 </ul>
--->
+

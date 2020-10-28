@@ -1,3 +1,5 @@
+import { AppRoutingModule } from './app-routing.module';
+import { RouterModule } from '@angular/router';
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
@@ -36,13 +38,14 @@ import { NewsDashComponent } from './news-dash/news-dash.component';
 import { NewsNavComponent } from './news-nav/news-nav.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 
-
 @NgModule({
   imports: [
     BrowserModule,
     MatInputModule,
     MatProgressSpinnerModule,
     FormsModule,
+    RouterModule,
+    AppRoutingModule,
     // import HttpClientModule after BrowserModule.
     HttpClientModule,
     HttpClientXsrfModule.withOptions({
