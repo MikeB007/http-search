@@ -41,7 +41,7 @@ export class NewsStatService {
     };
   }
 }
-export const statsUrl = 'http://107.190.108.52/api/news/stats';
+export const statsUrl = 'http://107.190.108.53/api/news/stats';
 
 const httpOptions = {
   headers: new HttpHeaders({
