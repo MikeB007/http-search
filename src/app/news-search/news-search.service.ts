@@ -19,7 +19,7 @@ export interface NewsInfo {
 
 
 //export const searchUrl = 'https://npmsearch.com/query';
-export const searchUrl = 'http://107.190.108.53/api/news/search/';
+export const searchUrl = 'http://107.190.108.4/api/news/search/';
 
 
 
@@ -43,15 +43,24 @@ export class NewsSearchService {
 
   private handleError: HandleError;
   find: string;
+  myAlert:string;
   constructor(
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler) {
     this.handleError = httpErrorHandler.createHandleError('HeroesService');
   }
 
+  selectMyText(text:string):any{
+   this.myAlert = "Alert:";
+   this.myAlert = this.myAlert + text;
+    alert(this.myAlert);
+    console.log(this.myAlert);
+  }
+
+
+
   search(searchTerm: string, dataLoading:boolean, refresh = false): Observable<NewsInfo[]> {
      dataLoading=true;
-
      this.find = searchTerm;
      const myRegExp = new RegExp(this.find, "gi");
 
@@ -64,7 +73,7 @@ export class NewsSearchService {
 
 
     // TODO: Add error handling
-    return this.http.get(searchUrl+searchTerm).pipe(
+    return this.http.get(searchUrl+searchTerm +"/30").pipe(
       map((data: any) => {
         return data.map((nn: NewsInfo) => ({
             SRC:nn.SRC,

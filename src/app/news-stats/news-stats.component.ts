@@ -20,7 +20,7 @@ export class NewsStatsComponent implements OnInit {
 
 
   ngOnInit() {
-  this.getStats();
+ // this.getStats();
 }
 
 

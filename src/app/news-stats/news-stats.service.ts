@@ -11,16 +11,12 @@ export interface StatsInfo {
   count: BigInteger;
   }
 
-
 @Injectable({
  providedIn: 'root'
  })
 
-
 export class NewsStatService {
-
   constructor(private http: HttpClient) { }
-
   private extractData(res: Response) {
     const body = res;
     return body || { };
@@ -41,7 +37,7 @@ export class NewsStatService {
     };
   }
 }
-export const statsUrl = 'http://107.190.108.53/api/news/stats';
+export const statsUrl = 'http://107.190.108.4/api/news/stats';
 
 const httpOptions = {
   headers: new HttpHeaders({

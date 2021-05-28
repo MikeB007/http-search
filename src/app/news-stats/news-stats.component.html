@@ -1,16 +1,33 @@
+<!--
 <h1 style="text-align:center">Stats</h1>
+
+<a [routerLink]="[{ outlets: { primary: 'mydash', source: 'source/FOXNEWS' } }]">FOXNEWS</a>
 
 <div class="grid grid-pad">
   <a *ngFor="let N of stats" class="col-1-4"
       routerLink="/source/{{N.SRC}}">
     <div class="myinline">
-      <h4>{{" " + N.SRC}}-{{N.Total}}</h4>
+      <h5>{{" <" + N.SRC}}-{{N.Total+"> "}}</h5>
     </div>
   </a>
+
+-->
+
+
+
+
+<!--
+
+https://www.techiediaries.com/routing-angular-router/
+router.navigate([{outlets: {primary: 'path' ,sidebar: 'path'}}]);
+<a [routerLink]="[{ outlets: { primary: ['path'],sidebar: ['path'] } }]">
+    Products List
+</a>
+
 
 <ul>
   <li *ngFor="let N of stats ">
       <div class="myinline"><i>{{N.SRC}} - {{N.Total}}</i> </div>
   </li>
 </ul>
-
+-->

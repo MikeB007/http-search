@@ -20,13 +20,31 @@ export class NewsSearchComponent implements OnInit {
   news$: Observable<NewsInfo[]>;
   private searchText$ = new Subject<string>();
 
+  handleFocus = event => {
+    event.preventDefault();
+    const { target } = event;
+    const extensionStarts = target.value.length();
+
+    //const extensionStarts = target.value.lastIndexOf('.');
+    target.focus();
+    target.setSelectionRange(0, extensionStarts);
+  }
+
+
+  selectMyText(text:string)
+  {
+    text = "component";
+    alert(text);
+  }
+
   search(SearchTerm: string) {
+    //alert(SearchTerm);
     this.searchText$.next(SearchTerm);
   }
 
   ngOnInit() {
     this.news$ = this.searchText$.pipe(
-      debounceTime(500),
+      debounceTime(900),
       distinctUntilChanged(),
       switchMap(SearchTerm =>this.searchService.search(SearchTerm, this.withRefresh))
     );

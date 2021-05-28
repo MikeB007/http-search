@@ -12,9 +12,9 @@ import { NgModule } from '@angular/core';
 const routes: Routes = [
   {path: 'search',component:NewsSearchComponent},
   {path: 'mydash',component: NewsDashComponent},
+  {path: 'source/FOXNEWS', component: UnderConstructionComponent, outlet: "source" },
   {path: 'stats',component: NewsStatsComponent},
   {path: 'underConstruction',component: UnderConstructionComponent},
-  {path: 'source/:id', component: UnderConstructionComponent },
   {path: '**',component:NewsDashComponent },
 
 
