@@ -29,7 +29,7 @@ export class MyHTTPLoaderInterceptor implements HttpInterceptor {
     this.requests.push(req);
 
     console.log("No of requests--->" + this.requests.length);
-
+    console.log(req, "is the pushed req")
     this.loaderService.isLoading.next(true);
     return Observable.create(observer => {
       const subscription = next.handle(req)
@@ -37,6 +37,7 @@ export class MyHTTPLoaderInterceptor implements HttpInterceptor {
           event => {
             if (event instanceof HttpResponse) {
               this.removeRequest(req);
+
               observer.next(event);
             }
           },

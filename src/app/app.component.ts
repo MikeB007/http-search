@@ -2,14 +2,11 @@ import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  /*showHeroes = true;
-  showConfig = true;
-  showDownloader = true;
-  showUploader = true;
-  */
+  title = 'news-search';
   showSearch = true;
-  toggleSearch() { this.showSearch = !this.showSearch; }
- }
+  toggleSearch() { this.showSearch = !this.showSearch; } 
+}

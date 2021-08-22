@@ -1,21 +1,41 @@
-<div class="container-fluid" style="margin-top:20px">
-  <div id="logo" class="pull-left">
-    <a [routerLink]="['/']"> <img class ="img"  style="margin-bottom: 20px" src="assets/img/screen/NEWS.gif" alt="Home" title="Home" /></a>
+
+
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+    <div class="logo-image pull-left">
+      <img src="assets/img/screen/NEWS.gif" class="img-fluid">
+    </div>
+  </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item">
+        <a class="nav-link" href="#">Search</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Popular Searches
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">Bitcoin</a>
+          <a class="dropdown-item" href="#">Gold</a>
+          <div class="dropdown-divider"></div>
+            <li *ngFor="let N of keywords">
+               <a class="dropdown-item" href="#">{{N.keyword}}</a>
+            </li>
+          </div>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
+      </li>
+    </ul>
   </div>
-
-  <nav id="nav-menu-container">
-      <ul class="nav-menu">
-          <li class="menu-active"><a [routerLink]="['/']">Home</a></li>
-          <li><a [routerLink]="['stats']">Stats</a></li>
-          <li><a [routerLink]="['underConstruction']">Popular Words</a></li>
-          <li><a [routerLink]="['search']">Search</a></li>
-
-          <li class="menu-has-children"><a href="">Select View</a>
-              <ul>
-                  <li><a [routerLink]="['/']">Home</a></li>
-                  <li><a [routerLink]="['stats/FOXNEWS']">Sats</a></li>
-              </ul>
-          </li>
-      </ul>
-  </nav><!-- #nav-menu-container -->
-</div>
+</nav>
+<!--
+<form class="form-inline my-3 my-lg-0">
+  <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+  <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+</form>
+-->

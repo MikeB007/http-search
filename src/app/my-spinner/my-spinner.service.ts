@@ -7,5 +7,6 @@ import { BehaviorSubject } from 'rxjs';
 export class MySpinnerService {
 
   public isLoading = new BehaviorSubject(false);
+
   constructor() { }
 }

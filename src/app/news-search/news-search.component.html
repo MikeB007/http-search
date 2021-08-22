@@ -1,10 +1,15 @@
 <mat-form-field class="example-full-width">
   <mat-label>My Search</mat-label>
-  <input matInput placeholder="Type Keyword..." value="" id="name" (keyup)="search($event.target.value)">
+  <input matInput placeholder="Type Keyword..." value="" id="name" (keyup)="search($any($event.target).value)">
 </mat-form-field>
 <ul>
-  <li *ngFor="let N of news$ | async">
+  <li *ngFor="let N of news$ | async; let i = index">
+    <div>
+      <a (click)="setFavourite(N.ID, i)">
+        <img src="{{'assets/img/fav/'+ imageType[+heartImage[i]]}}" alt="{{N.ID}}" style="width:15px;height:15px;"/>
+      </a>
+    </div>
       <div><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}} <br></i></div>
       <div class="myinline"><a target=_blank href={{N.ARTICLE_URL}}><div class="my-static-div" [innerHTML]='N.LABEL'></div></a></div>
       </li>
-  </ul>
+    </ul>

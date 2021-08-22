@@ -1,7 +1,6 @@
 
 import { Routes, RouterModule } from '@angular/router';
 
-import { NewsStatsComponent } from './news-stats/news-stats.component';
 import { NewsSearchComponent } from './news-search/news-search.component';
 import { UnderConstructionComponent } from './under-construction/under-construction.component';
 import { NewsDashComponent } from './news-dash/news-dash.component';
@@ -13,11 +12,9 @@ const routes: Routes = [
   {path: 'search',component:NewsSearchComponent},
   {path: 'mydash',component: NewsDashComponent},
   {path: 'source/FOXNEWS', component: UnderConstructionComponent, outlet: "source" },
-  {path: 'stats',component: NewsStatsComponent},
   {path: 'underConstruction',component: UnderConstructionComponent},
+  {path: 'search/*',component:NewsDashComponent },
   {path: '**',component:NewsDashComponent },
-
-
 ];
 
 @NgModule({
@@ -25,5 +22,3 @@ const routes: Routes = [
   exports: [RouterModule]
 })
 export class AppRoutingModule { }
-
-
