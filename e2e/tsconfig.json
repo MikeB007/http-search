@@ -9,6 +9,10 @@
       "jasmine",
       "jasminewd2",
       "node"
+    ],
+    "lib": [
+      "es2018",
+      "dom"
     ]
   }
 }
