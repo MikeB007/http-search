@@ -19,11 +19,12 @@
           Popular Searches
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-          <a class="dropdown-item" href="#">Bitcoin</a>
-          <a class="dropdown-item" href="#">Gold</a>
+          <a class="dropdown-item" [routerLink]="['/search', 'Gold ']">Gold </a>
+          <a class="dropdown-item" [routerLink]="['/search', 'Bitcoin']">bitcoin </a>
           <div class="dropdown-divider"></div>
             <li *ngFor="let N of keywords">
-               <a class="dropdown-item" href="#">{{N.keyword}}</a>
+             <!-- <a class="dropdown-item" href="#">{{N.keyword}}</a>  -->
+               <a class="dropdown-item" [routerLink]="['/search', N.keyword]">{{N.keyword}} </a>
             </li>
           </div>
       </li>

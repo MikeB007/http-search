@@ -16,6 +16,7 @@ export interface NewsInfo {
 	LABEL: string;
 	ARTICLE_URL: string;
   FAV_ID: string;
+  DAYS_OLD:number;
 }
 
 
@@ -79,7 +80,8 @@ export class NewsSearchService {
             ARTICLE_TM: nn.ARTICLE_TM,
             LABEL: nn.LABEL.replace(myRegExp," <div class='searchstyle2'>" + searchTerm +"</div>"),
             ARTICLE_URL: nn.ARTICLE_URL,
-            FAV_ID: nn.FAV_ID
+            FAV_ID: nn.FAV_ID,
+            DAYS_OLD: nn.DAYS_OLD
           }  as NewsInfo )
         );
       }),

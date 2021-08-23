@@ -9,7 +9,7 @@ import { NgModule } from '@angular/core';
 
 
 const routes: Routes = [
-  {path: 'search',component:NewsSearchComponent},
+  {path: 'search/:key',component:NewsSearchComponent},
   {path: 'mydash',component: NewsDashComponent},
   {path: 'source/FOXNEWS', component: UnderConstructionComponent, outlet: "source" },
   {path: 'underConstruction',component: UnderConstructionComponent},

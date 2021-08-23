@@ -5,6 +5,9 @@ import { Observable, Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
 
 import { NewsInfo, NewsSearchService } from './news-search.service';
+import { ActivatedRoute } from '@angular/router';
+import { ThisReceiver } from '@angular/compiler';
+
 
 
 
@@ -21,9 +24,12 @@ export class NewsSearchComponent implements OnInit {
   public dataLoading=false;
   imageType:string[];
 
+  backColor:string[];
+
+
   isLiked:boolean[];
   heartImage:boolean[];
-
+  key:string;
   news$: Observable<NewsInfo[]>;
   private searchText$ = new Subject<string>();
 
@@ -49,11 +55,11 @@ export class NewsSearchComponent implements OnInit {
   }
 
   search(SearchTerm: string  ) {
-
     this.searchText$.next(SearchTerm);
   }
 
   ngOnInit() {
+  //alert("ngoninit");
     this.news$ = this.searchText$.pipe(
       debounceTime(900),
       distinctUntilChanged(),
@@ -63,11 +69,30 @@ export class NewsSearchComponent implements OnInit {
     this.imageType[0]="heart.svg";
     this.imageType[1]="heart_on.svg";
     this.heartImage = new Array(300).fill(false);
+    this.backColor = new Array(10);
+    this.backColor[0]='green';
+    this.backColor[1]='orange';
+    this.backColor[2]='blue';
+    this.backColor[3]='yellow';
+    this.backColor[4]='red';
+    this.backColor[5]='purple';
+    this.backColor[6]='brown';
+    this.backColor[7]='magenta';
+
+
   }
 
-  constructor(private searchService: NewsSearchService) { }
+  constructor(private searchService: NewsSearchService,private _Activatedroute:ActivatedRoute) {
+   // this.key=this._Activatedroute.snapshot.paramMap.get("key");
+
+    this._Activatedroute.paramMap.subscribe(params => {
+      this.key = params.get('key');
+      this.search(this.key);
+  });
 
 
+
+  }
 
   toggleRefresh() { this.withRefresh  = ! this.withRefresh; }
 
