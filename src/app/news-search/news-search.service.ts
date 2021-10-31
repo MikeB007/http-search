@@ -49,6 +49,12 @@ function createHttpOptions(searchTerm: string, refresh = false) {
 @Injectable()
 export class NewsSearchService {
 
+  public getTime():string {
+    var tm = new Date();
+   return ("Search:" + tm.getHours() + ":" + tm.getMinutes() + ":" + tm.getSeconds());
+
+  }
+
   private handleError: HandleError;
   find: string;
   myAlert:string;
@@ -60,16 +66,16 @@ export class NewsSearchService {
 
 
 
-  search(searchTerm: string, dataLoading:boolean, refresh = false): Observable<NewsInfo[]> {
+  searchIt(searchTerm: string, dataLoading:boolean, refresh = false): Observable<NewsInfo[]> {
      dataLoading=false;
      this.find = searchTerm;
      const myRegExp = new RegExp(this.find, "gi");
 
-     console.log("Showing results");
-     console.log(this.find);
+     console.log("getting results:Search it");
      // clear if no pkg name
-    if (!searchTerm.trim() || (searchTerm.trim().length)<4) { return of([]); }
+    if (!searchTerm.trim() || (searchTerm.trim().length)<3) { return of([]); }
     const options = createHttpOptions(searchTerm, refresh);
+    console.log("getting results:Search it 2");
     // TODO: Add error handling
     return this.http.get(searchUrl+searchTerm +"/7").pipe(
       map((data: any) => {
@@ -84,6 +90,7 @@ export class NewsSearchService {
             DAYS_OLD: nn.DAYS_OLD
           }  as NewsInfo )
         );
+
       }),
       catchError(this.handleError('search', []))
     );

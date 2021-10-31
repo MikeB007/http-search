@@ -1,12 +1,14 @@
+import { NewsService } from './../_services/news.service';
 import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 
 
 import { Observable, Subject } from 'rxjs';
-import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
 
 import { NewsInfo, NewsSearchService } from './news-search.service';
 import { ActivatedRoute } from '@angular/router';
 import { ThisReceiver } from '@angular/compiler';
+
 
 
 
@@ -22,6 +24,7 @@ import { ThisReceiver } from '@angular/compiler';
 export class NewsSearchComponent implements OnInit {
   public withRefresh = false;
   public dataLoading=false;
+  public articles;
   imageType:string[];
 
   backColor:string[];
@@ -51,7 +54,6 @@ export class NewsSearchComponent implements OnInit {
   selectMyText(text:string)
   {
     text = "component";
-    alert(text);
   }
 
   search(SearchTerm: string  ) {
@@ -59,11 +61,10 @@ export class NewsSearchComponent implements OnInit {
   }
 
   ngOnInit() {
-  //alert("ngoninit");
     this.news$ = this.searchText$.pipe(
       debounceTime(900),
       distinctUntilChanged(),
-      switchMap(SearchTerm => this.searchService.search(SearchTerm, this.withRefresh))
+      switchMap(SearchTerm => this.searchService.searchIt(SearchTerm, this.withRefresh))
     );
     this.imageType = new Array(2);
     this.imageType[0]="heart.svg";
@@ -79,21 +80,26 @@ export class NewsSearchComponent implements OnInit {
     this.backColor[6]='brown';
     this.backColor[7]='magenta';
 
+    this.newsService.getSearchResults(this.key).subscribe((news$) => {
+      this.articles= (news$)
+    }
+    );
 
   }
 
-  constructor(private searchService: NewsSearchService,private _Activatedroute:ActivatedRoute) {
+  constructor(private searchService: NewsSearchService,private _Activatedroute:ActivatedRoute,private newsService: NewsService) {
    // this.key=this._Activatedroute.snapshot.paramMap.get("key");
 
     this._Activatedroute.paramMap.subscribe(params => {
       this.key = params.get('key');
-      this.search(this.key);
   });
 
-
-
   }
+
 
   toggleRefresh() { this.withRefresh  = ! this.withRefresh; }
 
 }
+
+
+

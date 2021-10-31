@@ -25,13 +25,15 @@ import { NewsDashComponent } from './news-dash/news-dash.component';
 import { NewsNavComponent } from './news-nav/news-nav.component';
 import { AuthService } from './auth.service';
 import { MessageService } from './message.service';
+import { NewsFindComponent } from './news-find/news-find.component';
 @NgModule({
   declarations: [
     AppComponent,
     MySpinnerComponent,
     NewsSearchComponent,
     NewsDashComponent,
-    NewsNavComponent
+    NewsNavComponent,
+    NewsFindComponent
   ],
 
   imports: [

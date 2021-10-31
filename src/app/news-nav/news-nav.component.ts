@@ -22,17 +22,15 @@ export class NewsNavComponent implements OnInit {
 
   // Variables
   public keywords;
-
   constructor(private newsService: NewsService ){}
 
   ngOnInit() : void {
 
-    this.newsService.getKeywords().subscribe((keywords) => {
-
+    this.newsService.getKeywordsEric().subscribe((keywords) => {
       this.keywords= (keywords)
-    })
-
+    }
+    );
 
   }
-}
 
+}
