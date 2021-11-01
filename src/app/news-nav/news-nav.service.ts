@@ -42,12 +42,12 @@ function createHttpOptions(searchTerm: string, refresh = false) {
 export class NewsNavService {
   private handleError: HandleError;
 
+
   constructor(
     private http: HttpClient,
     httpErrorHandler: HttpErrorHandler) {
     this.handleError = httpErrorHandler.createHandleError('HeroesService');
   }
-
 
   getKeywords( dataLoading:boolean, refresh = false): Observable<KeywordsInfo[]> {
     dataLoading=false;

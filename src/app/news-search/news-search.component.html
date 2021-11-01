@@ -4,7 +4,7 @@
   <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)">
 </mat-form-field>
 <ul>
-  <li *ngFor="let N of news$ | async; let i = index">
+  <li *ngFor="let N of news; let i = index">
     <div id="bloc1">
       <a (click)="setFavourite(N.ID, i)">
         <img src="{{'assets/img/fav/'+ imageType[+heartImage[i]]}}" alt="{{N.ID}}" style="background-color:{{backColor[N.DAYS_OLD]}};width:15px;height:15px;"/>

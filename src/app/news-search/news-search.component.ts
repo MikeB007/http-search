@@ -34,6 +34,8 @@ export class NewsSearchComponent implements OnInit {
   heartImage:boolean[];
   key:string;
   news$: Observable<NewsInfo[]>;
+  news: any[];
+  //news$:any;
   private searchText$ = new Subject<string>();
 
   handleFocus = event => {
@@ -61,11 +63,15 @@ export class NewsSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+
     this.news$ = this.searchText$.pipe(
       debounceTime(900),
       distinctUntilChanged(),
       switchMap(SearchTerm => this.searchService.searchIt(SearchTerm, this.withRefresh))
     );
+
+    // Translating the observable into an array
+    (this.news$.subscribe(result => this.news = result))
     this.imageType = new Array(2);
     this.imageType[0]="heart.svg";
     this.imageType[1]="heart_on.svg";
@@ -80,10 +86,6 @@ export class NewsSearchComponent implements OnInit {
     this.backColor[6]='brown';
     this.backColor[7]='magenta';
 
-    this.newsService.getSearchResults(this.key).subscribe((news$) => {
-      this.articles= (news$)
-    }
-    );
 
   }
 
@@ -92,6 +94,11 @@ export class NewsSearchComponent implements OnInit {
 
     this._Activatedroute.paramMap.subscribe(params => {
       this.key = params.get('key');
+      if(this.key){
+        this.searchService.searchIt(this.key, this.withRefresh).subscribe(result => {
+          this.news= result
+        })
+      }
   });
 
   }

@@ -3,6 +3,7 @@ import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
 import { KeywordsInfo, NewsNavService } from './news-nav.service';
+import { Output, EventEmitter } from '@angular/core';
 
 // Services
 import { NewsService } from '../_services/news.service';
@@ -20,6 +21,11 @@ export class NewsNavComponent implements OnInit {
   // this.keywords$= null;
   // }
 
+  // Output to send the latest term to the search
+  @Output()
+  public popularSearch = new EventEmitter();
+
+
   // Variables
   public keywords;
   constructor(private newsService: NewsService ){}
@@ -31,6 +37,11 @@ export class NewsNavComponent implements OnInit {
     }
     );
 
+  }
+
+  updatePopularSearch(term){
+    console.log("updated popular search to ", term)
+    this.popularSearch.emit(term);
   }
 
 }
