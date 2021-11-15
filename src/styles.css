@@ -42,12 +42,12 @@ button:disabled {
 
 /* Navigation link styles */
 nav a {
-  padding: 5px 10px;
+  padding: 15px 10px;
   text-decoration: none;
   margin-right: 10px;
   margin-top: 10px;
   display: inline-block;
-  background-color: #eee;
+  /*background-color: #eee;*/
   border-radius: 4px;
 }
 nav a:visited, a:link {
@@ -78,8 +78,33 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
   font-style: unset;
 }
 
+.myinline1 {
+  display: inline-block;
+  font-size:x-small;
+}
+
+.myinline2 {
+  display: inline-block;
+  font-size:small;
+}
+
+.myinline3 {
+  display: inline-block;
+  font-size:larger;
+}
+
+.myinline4 {
+  display: inline-block;
+  font-size:large;
+}
+
+.myinline5 {
+  display: inline-block;
+  font-size:x-large;
+}
 .myinline {
   display: inline-block;
+  font-size:smaller;
 }
 
 
@@ -112,7 +137,7 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
 
-img {
+imgIcon {
   max-width:20%;
   height:auto;
 }
@@ -130,8 +155,17 @@ div:hoverr {
 }
 
 
-*.focusss {
+*.focuss {
   outline-width: 1px;
   outline-style: dashed;
   outline-color: red;
 }
+
+
+div.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top:1px ;
+  border: 2px solid #4CAF50;
+}
+

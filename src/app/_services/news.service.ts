@@ -32,9 +32,12 @@ export class NewsService {
 
   // Functions
   getKeywordsEric(){
-    return this.http.get(baseURL+'news/get/keywords')
+    return this.http.get(baseURL+'news/get/keywords/0')
   }
 
+  getKeywordsRecent(){
+    return this.http.get(baseURL+'news/get/keywords/1')
+  }
   // Functions
   getSearchResults( key: string){
     const myRegExp = new RegExp(key, "gi")
