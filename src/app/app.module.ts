@@ -26,6 +26,7 @@ import { NewsNavComponent } from './news-nav/news-nav.component';
 import { AuthService } from './auth.service';
 import { MessageService } from './message.service';
 import { NewsFindComponent } from './news-find/news-find.component';
+import { ShowProfileComponent } from './stocks/show-profile/show-profile.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,7 +34,8 @@ import { NewsFindComponent } from './news-find/news-find.component';
     NewsSearchComponent,
     NewsDashComponent,
     NewsNavComponent,
-    NewsFindComponent
+    NewsFindComponent,
+    ShowProfileComponent
   ],
 
   imports: [

@@ -26,8 +26,8 @@ export interface StatusInfo {
 
 
 //export const searc Url = 'https://npmsearch.com/query';
-export const searchUrl  = 'http://198.84.134.138:5000/api/news/search/';
-export const saveFavURL = 'http://198.84.134.138:5000/api/news/saveFav/';
+export const searchUrl  = 'http://24.150.118.63:5000/api/news/search/';
+export const saveFavURL = 'http://24.150.118.63:5000/api/news/saveFav/';
 
 
 
