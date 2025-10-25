@@ -1,0 +1,65 @@
+name: Angular CI/CD
+
+on:
+  push:
+    branches: [ master, url-search-feature ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14.x'
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-node-
+
+    - name: Install Dependencies
+      run: npm ci
+
+    - name: Build
+      run: npm run build -- --configuration=production
+
+    - name: Run Tests
+      run: npm run test -- --watch=false --browsers=ChromeHeadless
+
+    - name: Upload Build Artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: dist
+        path: dist/
+
+  deploy:
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'  # Only deploy from master branch
+
+    steps:
+    - name: Download Build Artifact
+      uses: actions/download-artifact@v2
+      with:
+        name: dist
+
+    # Add your deployment step here. Examples:
+    # - Deploy to GitHub Pages
+    # - Deploy to Azure
+    # - Deploy to AWS
+    # Uncomment and configure the deployment method you prefer:
+
+    #- name: Deploy to GitHub Pages
+    #  uses: JamesIves/github-pages-deploy-action@4.1.4
+    #  with:
+    #    branch: gh-pages
+    #    folder: dist/news-search
