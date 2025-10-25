@@ -17,7 +17,9 @@ export class NewsFindComponent implements OnInit {
     // this.key=this._Activatedroute.snapshot.paramMap.get("key");
      this._Activatedroute.paramMap.subscribe(params => {
        this.key = params.get('key');
-       this.router.navigate(['/search/' + this.key]);
+       if (this.key) {
+         this.router.navigate(['/search/' + this.key]);
+       }
    });
 
    }
