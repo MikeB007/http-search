@@ -2,6 +2,27 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.0.2.
 
+## Live Demo
+
+🚀 **Deployed at:** https://mikeb007.github.io/http-search/
+
+## Mixed Content / CORS Proxy
+
+The production build uses a CORS proxy (AllOrigins) to work around Mixed Content errors when accessing HTTP backend from HTTPS GitHub Pages.
+
+- **Development:** Direct HTTP connection to `http://147.194.240.208:5000`
+- **Production:** Proxied through `https://api.allorigins.win/raw?url=...`
+
+### Alternative Solutions
+
+If the proxy service is slow or unavailable:
+
+1. **Use HTTP access** (if available) instead of HTTPS
+2. **Set up HTTPS on backend** at 147.194.240.208:5000 with SSL certificate
+3. **Use a different proxy**:
+   - Update `src/app/_environments/environment.prod.ts`
+   - Options: `cors-anywhere.herokuapp.com`, `corsproxy.io`, or deploy your own
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
