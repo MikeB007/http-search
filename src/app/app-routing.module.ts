@@ -1,3 +1,4 @@
+import { ShowProfileComponent } from './stocks/show-profile/show-profile.component';
 
 import { Routes, RouterModule } from '@angular/router';
 
@@ -9,12 +10,14 @@ import { NewsNavComponent } from './news-nav/news-nav.component';
 
 
 import { NgModule } from '@angular/core';
+import { CompanyDashComponent } from './company-dash/company-dash.component';
 
 
 const routes: Routes = [
   {path: '',component:NewsDashComponent},
   {path: 'find/:key',component:NewsFindComponent},
   {path: 'search/:key',component:NewsDashComponent},
+  {path: 'searchCompany/:key',component:CompanyDashComponent},
   {path: 'mydash',component: NewsDashComponent},
   {path: 'source/FOXNEWS', component: UnderConstructionComponent, outlet: "source" },
   {path: 'underConstruction',component: UnderConstructionComponent},

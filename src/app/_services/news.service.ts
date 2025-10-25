@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {SERVER} from "../_environments/environment";
+import {Settings} from "../_environments/environment";
 import { catchError, map } from 'rxjs/operators';
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
 
 
-const baseURL = SERVER.server_url;
+const baseURL = Settings.server_url+ '/api/';
 
 export interface NewsInfo {
   ID: string;

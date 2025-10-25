@@ -2,6 +2,16 @@
 <mat-form-field class="example-full-width" >
   <mat-label>My Search</mat-label>
   <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)">
+  <!--
+  <button
+  matSuffix
+  mat-icon-button
+  color="primary"
+  matTooltip="the number must be formatted in english"
+  matTooltipPosition="below">
+  <mat-icon>info</mat-icon>
+</button>
+-->
 </mat-form-field>
 <ul>
   <li *ngFor="let N of news; let i = index">

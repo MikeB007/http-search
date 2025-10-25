@@ -23,6 +23,7 @@ import { MyHTTPLoaderInterceptor } from './http-interceptors/loader-interceptor.
 
 import { NewsDashComponent } from './news-dash/news-dash.component';
 import { NewsNavComponent } from './news-nav/news-nav.component';
+import { CompanyDashComponent } from './company-dash/company-dash.component';
 import { AuthService } from './auth.service';
 import { MessageService } from './message.service';
 import { NewsFindComponent } from './news-find/news-find.component';
@@ -34,6 +35,7 @@ import { ShowProfileComponent } from './stocks/show-profile/show-profile.compone
     NewsSearchComponent,
     NewsDashComponent,
     NewsNavComponent,
+  CompanyDashComponent,
     NewsFindComponent,
     ShowProfileComponent
   ],

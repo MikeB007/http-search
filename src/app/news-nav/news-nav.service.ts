@@ -1,3 +1,4 @@
+import {Settings} from "../_environments/environment";
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -5,6 +6,7 @@ import { Observable, of } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
 
 import { HttpErrorHandler, HandleError } from '../http-error-handler.service';
+
 
 
 export interface KeywordsInfo {
@@ -17,7 +19,7 @@ export interface StatusInfo {
 }
 
 
-export const callUrl  = 'http://198.84.134.138:5000/api/news/get/keywords';
+export const callUrl  = Settings.server_url + '/api/news/get/keywords';
 
 
 const httpOptions = {

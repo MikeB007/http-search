@@ -1,3 +1,4 @@
+import {Settings} from "../_environments/environment";
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 
@@ -26,8 +27,8 @@ export interface StatusInfo {
 
 
 //export const searc Url = 'https://npmsearch.com/query';
-export const searchUrl  = 'http://24.150.118.63:5000/api/news/search/';
-export const saveFavURL = 'http://24.150.118.63:5000/api/news/saveFav/';
+export const searchUrl  = Settings.server_url + '/api/news/search/';
+export const saveFavURL = Settings.server_url + '/api/news/saveFav/';
 
 
 
