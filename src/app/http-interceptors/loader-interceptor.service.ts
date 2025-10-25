@@ -42,7 +42,7 @@ export class MyHTTPLoaderInterceptor implements HttpInterceptor {
             }
           },
           err => {
-            alert('error' + err);
+            alert('MY error' + err);
             this.removeRequest(req);
             observer.error(err);
           },

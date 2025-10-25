@@ -1,11 +1,12 @@
 
 
-<nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="#">
+<nav class="navbar navbar-expand-lg navbar-light ">
+  <a class="navbar-brand" [routerLink]="['']">
     <div class="logo-image pull-left">
       <img src="assets/img/screen/NEWS.gif" class="img-fluid">
     </div>
   </a>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -16,26 +17,53 @@
       </li>
     -->
       <li class="nav-item dropdown">
-        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <a class="nav-link dropdown-toggle " href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           Popular Searches
         </a>
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
           <a class="dropdown-item" [routerLink]="['/search', 'Gold ']">Gold </a>
-          <a class="dropdown-item" [routerLink]="['/search', 'Bitcoin']">bitcoin </a>
+          <a class="dropdown-item" [routerLink]="['/search', 'Bitcoin']">Bitcoin </a>
+          <a class="dropdown-item" [routerLink]="['/search', 'Lithium']">Lithium </a>
+          <a class="dropdown-item" [routerLink]="['/search', 'Uranium']">Uranium </a>
           <div class="dropdown-divider"></div>
+            <li *ngFor="let M of recentKeywords">
+              <!-- <a class="dropdown-item" href="#">{{N.keyword}}</a>  -->
+                <a class="dropdown-item " [routerLink]="['/search', M.keyword]" >{{M.keyword}} </a>
+             </li>
+             <div class="dropdown-divider"></div>
             <li *ngFor="let N of keywords">
              <!-- <a class="dropdown-item" href="#">{{N.keyword}}</a>  -->
-               <a class="dropdown-item" [routerLink]="['/search', N.keyword]">{{N.keyword}} </a>
+               <a class="dropdown-item scrollmenu" [routerLink]="['/search', N.keyword]" >{{N.keyword}} </a>
             </li>
           </div>
-      </li>
+        </li>
       <li class="nav-item">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle " href="#" id="featurus" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Features
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" [routerLink]="['/searchCompany', 'Gold ']">Gold </a>
+        </div>
+      <li class="nav-item">
+
     <!--    <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Disabled</a>
       </li>
     -->
     </ul>
   </div>
+  <div>
+     <img src="assets/img/LSize.png" width="30px" (click)="ImageClick(-1)">
+     <img src="assets/img/LSize.png" width="50px" (click)="ImageClick(1)">
+  </div>
+ <!-- <a [routerLink]="['']">
+    <div  class="pull-right">
+      <img src="assets/img/LSize.png" >
+    </div>
+  </a>
+-->
 </nav>
+
 <!--
 <form class="form-inline my-3 my-lg-0">
   <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">

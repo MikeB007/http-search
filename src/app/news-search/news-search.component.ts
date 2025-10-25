@@ -1,15 +1,14 @@
+import { FontService } from './../font-service';
 import { NewsService } from './../_services/news.service';
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewEncapsulation } from '@angular/core';
 
 
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject,Subscription } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap, map } from 'rxjs/operators';
 
 import { NewsInfo, NewsSearchService } from './news-search.service';
 import { ActivatedRoute } from '@angular/router';
 import { ThisReceiver } from '@angular/compiler';
-
-
 
 
 
@@ -21,19 +20,24 @@ import { ThisReceiver } from '@angular/compiler';
   providers: [NewsSearchService ],
   encapsulation: ViewEncapsulation.None,
 })
-export class NewsSearchComponent implements OnInit {
+export class NewsSearchComponent implements OnInit, OnDestroy {
   public withRefresh = false;
   public dataLoading=false;
   public articles;
+  //public fs: FontService;
   imageType:string[];
-
   backColor:string[];
+
+  fSize: String;
+  subscription: Subscription;
 
 
   isLiked:boolean[];
   heartImage:boolean[];
   key:string;
+  news: any[];
   news$: Observable<NewsInfo[]>;
+  //news$:any;
   private searchText$ = new Subject<string>();
 
   handleFocus = event => {
@@ -61,11 +65,15 @@ export class NewsSearchComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.subscription = this.data.currentFontSize.subscribe(fSize => this.fSize = fSize)
     this.news$ = this.searchText$.pipe(
       debounceTime(900),
       distinctUntilChanged(),
       switchMap(SearchTerm => this.searchService.searchIt(SearchTerm, this.withRefresh))
     );
+
+    // Translating the observable into an array
+    (this.news$.subscribe(result => this.news = result))
     this.imageType = new Array(2);
     this.imageType[0]="heart.svg";
     this.imageType[1]="heart_on.svg";
@@ -79,19 +87,22 @@ export class NewsSearchComponent implements OnInit {
     this.backColor[5]='purple';
     this.backColor[6]='brown';
     this.backColor[7]='magenta';
-
-    this.newsService.getSearchResults(this.key).subscribe((news$) => {
-      this.articles= (news$)
-    }
-    );
-
   }
 
-  constructor(private searchService: NewsSearchService,private _Activatedroute:ActivatedRoute,private newsService: NewsService) {
+  ngOnDestroy(){
+    this.subscription.unsubscribe;
+  }
+
+  constructor(private searchService: NewsSearchService,private _Activatedroute:ActivatedRoute,private newsService: NewsService,private data:FontService) {
    // this.key=this._Activatedroute.snapshot.paramMap.get("key");
 
     this._Activatedroute.paramMap.subscribe(params => {
       this.key = params.get('key');
+      if(this.key){
+        this.searchService.searchIt(this.key, this.withRefresh).subscribe(result => {
+          this.news= result
+        })
+      }
   });
 
   }

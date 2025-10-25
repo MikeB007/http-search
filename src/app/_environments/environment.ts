@@ -1,3 +1,3 @@
-export const SERVER = {
-  server_url  : "http://198.84.134.138:5000/api/"
+export const Settings = {
+  server_url  : "http://147.194.240.208.:5000"
 }

@@ -9,3 +9,10 @@
   overflow: hidden;
   margin-top: -6px;
 }
+
+
+.dropdown-menu {
+  max-height:350px;
+  overflow-y:scroll;
+
+}

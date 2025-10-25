@@ -1,11 +1,21 @@
 
-<mat-form-field class="example-full-width">
+<mat-form-field class="example-full-width" >
   <mat-label>My Search</mat-label>
   <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)">
+  <!--
+  <button
+  matSuffix
+  mat-icon-button
+  color="primary"
+  matTooltip="the number must be formatted in english"
+  matTooltipPosition="below">
+  <mat-icon>info</mat-icon>
+</button>
+-->
 </mat-form-field>
 <ul>
-  <li *ngFor="let N of news$ | async; let i = index">
-    <div id="bloc1">
+  <li *ngFor="let N of news; let i = index">
+    <div id="bloc1"  >
       <a (click)="setFavourite(N.ID, i)">
         <img src="{{'assets/img/fav/'+ imageType[+heartImage[i]]}}" alt="{{N.ID}}" style="background-color:{{backColor[N.DAYS_OLD]}};width:15px;height:15px;"/>
       </a>
@@ -13,7 +23,11 @@
       </div>
 
     </div>
-      <div ><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}} <br></i></div>
-      <div class="myinline"><a  target=_blank href={{N.ARTICLE_URL}}><div class="my-static-div" [innerHTML]='N.LABEL'></div></a></div>
-      </li>
-    </ul>
+<!--    <div [ngClass]="fsValue" ></div>-->
+    <div ><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}} <br></i></div>
+      <div [ngClass]="fSize" ><p><a  target=_blank href={{N.ARTICLE_URL}}><div class="my-static-div" [innerHTML]='N.LABEL'></div></a></p>
+    </div>
+
+  </li>
+
+</ul>
