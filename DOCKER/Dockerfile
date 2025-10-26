@@ -12,7 +12,11 @@ COPY package*.json ./
 
 # Install all dependencies (including dev dependencies for building)
 # Use npm install instead of npm ci to handle package-lock sync issues
-RUN npm install --force && npm cache clean --force
+# Add timeout and optimization flags for faster builds
+RUN npm config set fund false && \
+    npm config set audit false && \
+    npm install --force --no-optional --production=false && \
+    npm cache clean --force
 
 # Copy source code
 COPY . .
