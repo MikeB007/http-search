@@ -101,8 +101,8 @@ ${ipEntries}
     // Generate private key and certificate
     execSync(`openssl req -x509 -newkey rsa:2048 -keyout "${keyPath}" -out "${certPemPath}" -days 365 -nodes -config "${configPath}"`, { stdio: 'pipe' });
     
-    // Create PKCS#12 bundle
-    execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:${CERT_PASSWORD}`, { stdio: 'pipe' });
+    // Create PKCS#12 bundle with Node.js compatible settings
+    execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:${CERT_PASSWORD} -legacy`, { stdio: 'pipe' });
     
     // Clean up temporary files
     fs.unlinkSync(keyPath);
