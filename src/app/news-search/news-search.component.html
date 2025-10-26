@@ -1,7 +1,7 @@
 
 <mat-form-field class="example-full-width" >
   <mat-label>My Search</mat-label>
-  <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)">
+  <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)" (click)="handleFocus($event)">
   <!--
   <button
   matSuffix

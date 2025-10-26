@@ -41,13 +41,14 @@ export class NewsSearchComponent implements OnInit, OnDestroy {
   private searchText$ = new Subject<string>();
 
   handleFocus = event => {
-    event.preventDefault();
     const { target } = event;
-    const extensionStarts = target.value.length();
-
-    //const extensionStarts = target.value.lastIndexOf('.');
-    target.focus();
-    target.setSelectionRange(0, extensionStarts);
+    // Only select text if there is content in the input
+    if (target.value && target.value.trim().length > 0) {
+      // Use setTimeout to ensure the selection happens after the click event
+      setTimeout(() => {
+        target.select();
+      }, 0);
+    }
   }
 
   setFavourite(text:string, index:number){
