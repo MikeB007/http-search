@@ -117,7 +117,7 @@ deploy() {
     
     # Step 7: Start new container
     print_info "Step 7: Starting new container..."
-    run_remote "cd $DEPLOY_DIR && SSL_PASSPHRASE='$SSL_PASSWORD' docker-compose -f docker-compose.prod.yml up -d"
+    run_remote "cd $DEPLOY_DIR && SSL_PASSPHRASE='$SSL_PASSWORD' docker-compose -f docker-compose.yml up -d"
     
     # Wait for container to start
     sleep 10
@@ -150,9 +150,9 @@ deploy() {
     echo "Image: $IMAGE_NAME"
     echo ""
     echo "Management commands:"
-    echo "• View logs:    ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.prod.yml logs -f'"
-    echo "• Stop app:     ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.prod.yml down'"
-    echo "• Restart app:  ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.prod.yml restart'"
+    echo "• View logs:    ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.yml logs -f'"
+    echo "• Stop app:     ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.yml down'"
+    echo "• Restart app:  ssh $REMOTE_USER@$REMOTE_SERVER 'cd $DEPLOY_DIR && docker-compose -f docker-compose.yml restart'"
     echo "• Update app:   ./deploy-remote.sh $REMOTE_SERVER $REMOTE_USER"
     echo ""
     
@@ -178,7 +178,7 @@ show_usage() {
     echo "Prerequisites:"
     echo "  • SSH access to target server"
     echo "  • Docker installed on target server"
-    echo "  • docker-compose.prod.yml in current directory"
+    echo "  • docker-compose.yml in DOCKER directory"
 }
 
 # Check if help is requested
