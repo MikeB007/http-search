@@ -18,7 +18,7 @@ console.log('');
 // Configuration
 const isDocker = fs.existsSync('/.dockerenv');
 const isWindows = process.platform === 'win32';
-const hasDockerCompose = fs.existsSync('./docker-compose.yml');
+const hasDockerCompose = fs.existsSync('./DOCKER/docker-compose.yml');
 
 // Environment detection
 console.log('📋 Environment Detection:');
@@ -92,7 +92,7 @@ function startApplication() {
       console.log('');
       
       // Start with Docker Compose
-      execSync('docker-compose up --build', { stdio: 'inherit' });
+      execSync('docker-compose -f DOCKER/docker-compose.yml up --build', { stdio: 'inherit' });
       
     } else {
       // Direct Node.js execution

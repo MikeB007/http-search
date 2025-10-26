@@ -92,7 +92,7 @@ deploy() {
     
     # Step 4: Copy deployment files
     print_info "Step 4: Copying deployment files..."
-    copy_to_remote "docker-compose.prod.yml" "$DEPLOY_DIR/"
+    copy_to_remote "DOCKER/docker-compose.yml" "$DEPLOY_DIR/"
     
     # Copy certificate if it exists locally
     if [ -f "./certs/localhost.p12" ]; then
@@ -112,7 +112,7 @@ deploy() {
     
     # Step 6: Stop existing container
     print_info "Step 6: Stopping existing container..."
-    run_remote "cd $DEPLOY_DIR && docker-compose -f docker-compose.prod.yml down 2>/dev/null || true"
+    run_remote "cd $DEPLOY_DIR && docker-compose -f docker-compose.yml down 2>/dev/null || true"
     print_step "Existing container stopped"
     
     # Step 7: Start new container

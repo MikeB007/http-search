@@ -61,12 +61,12 @@ try {
     # Step 3: Download Docker Compose file
     Write-Host "⬇️ Downloading Docker Compose configuration..." -ForegroundColor Yellow
     
-    $composeUrl = "https://raw.githubusercontent.com/MikeB007/http-search/master/docker-compose.prod.yml"
-    $composePath = "$DeployPath\docker-compose.prod.yml"
+    $composeUrl = "https://raw.githubusercontent.com/MikeB007/http-search/master/DOCKER/docker-compose.yml"
+    $composePath = "$DeployPath\docker-compose.yml"
     
     try {
         Invoke-WebRequest -Uri $composeUrl -OutFile $composePath -UseBasicParsing
-        Write-Host "✓ Downloaded docker-compose.prod.yml" -ForegroundColor Green
+        Write-Host "✓ Downloaded docker-compose.yml" -ForegroundColor Green
     } catch {
         Write-Host "❌ Failed to download compose file: $($_.Exception.Message)" -ForegroundColor Red
         Read-Host "Press Enter to exit"

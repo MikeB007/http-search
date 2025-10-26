@@ -1,8 +1,8 @@
 services:
   http-search-app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: DOCKER/Dockerfile
     container_name: http-search-server
     restart: unless-stopped
     ports:

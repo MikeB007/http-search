@@ -1,8 +1,8 @@
 services:
   http-search-app:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: DOCKER/Dockerfile
       target: builder
     container_name: http-search-dev
     restart: unless-stopped

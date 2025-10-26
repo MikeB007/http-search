@@ -94,7 +94,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 - **Main Scripts**: `./scripts/` - Cross-platform deployment scripts
 - **Certificates**: `./certs/` - SSL certificate storage
 - **Documentation**: `./README/` - Detailed deployment guides
-- **Docker**: `./docker-compose.yml` - Container configurations
+- **Docker**: `./DOCKER/docker-compose.yml` - Container configurations
 
 ## 💡 **Tips**
 
