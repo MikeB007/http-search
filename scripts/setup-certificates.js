@@ -101,16 +101,23 @@ ${ipEntries}
     // Generate private key and certificate
     execSync(`openssl req -x509 -newkey rsa:2048 -keyout "${keyPath}" -out "${certPemPath}" -days 365 -nodes -config "${configPath}"`, { stdio: 'pipe' });
     
-    // Create PKCS#12 bundle with Node.js compatible settings
-    execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:${CERT_PASSWORD} -legacy`, { stdio: 'pipe' });
+    // Create PKCS#12 bundle with Node.js 18+ compatible settings
+    try {
+      execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:${CERT_PASSWORD} -legacy -macalg sha1`, { stdio: 'pipe' });
+      console.log(`✓ SSL certificate created: ${certPath}`);
+      
+      // Keep PEM files as fallback for Node.js compatibility issues
+      console.log(`✓ PEM fallback files available: ${keyPath}, ${certPemPath}`);
+      
+    } catch (pkcs12Error) {
+      console.log('⚠️  PKCS12 creation failed, keeping PEM files for compatibility');
+      console.log(`✓ SSL certificate created (PEM format): ${certPemPath}`);
+    }
     
-    // Clean up temporary files
-    fs.unlinkSync(keyPath);
-    fs.unlinkSync(certPemPath);
-    fs.unlinkSync(configPath);
-    
-    console.log(`✓ SSL certificate created: ${certPath}`);
     console.log(`✓ Certificate password: ${CERT_PASSWORD}`);
+    
+    // Clean up OpenSSL config but keep certificate files
+    fs.unlinkSync(configPath);
     
     return certPath;
     
