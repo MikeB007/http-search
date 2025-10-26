@@ -48,7 +48,7 @@ Use this script to automatically install the certificate on client computers:
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MikeB007/http-search/master/scripts/install-trusted-certificate.ps1" -OutFile "install-cert.ps1"
 
 # Run it (replace with your server IP)
-.\install-cert.ps1 -ServerIP "192.168.86.40"
+.\install-cert.ps1 -ServerIP "[INTERNAL-IP]"
 ```
 
 ### **Or Manual Commands:**
@@ -63,7 +63,7 @@ Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MikeB007/http-search/m
 }
 
 # Make request to get certificate
-Invoke-WebRequest -Uri "https://192.168.86.40:8443" -TimeoutSec 5 -ErrorAction SilentlyContinue | Out-Null
+Invoke-WebRequest -Uri "https://[INTERNAL-IP]:8443" -TimeoutSec 5 -ErrorAction SilentlyContinue | Out-Null
 
 # Install as trusted
 Import-Certificate -FilePath "$env:TEMP\server-cert.cer" -CertStoreLocation "cert:\LocalMachine\Root"
@@ -78,7 +78,7 @@ Write-Host "✅ Certificate installed as trusted!"
 ### **After Installing Certificate:**
 
 1. **Open web browser**
-2. **Go to:** `https://192.168.86.40:8443`
+2. **Go to:** `https://[INTERNAL-IP]:8443`
 3. **Check for:**
    - ✅ **No security warnings**
    - ✅ **Lock icon in address bar**
@@ -127,10 +127,10 @@ Close and reopen your browser completely.
 
 Once the certificate is trusted, users can access without warnings:
 
-- ✅ `https://192.168.86.40:8443` - Direct IP access
+- ✅ `https://[INTERNAL-IP]:8443` - Direct IP access
 - ✅ `https://base:8443` - If DNS configured  
 - ✅ `https://localhost:8443` - From server itself
-- ✅ `http://192.168.86.40` - Redirects to HTTPS
+- ✅ `http://[INTERNAL-IP]` - Redirects to HTTPS
 
 ---
 
@@ -147,7 +147,7 @@ Once the certificate is trusted, users can access without warnings:
 2. **Recreate certificate with correct DNS names:**
    ```powershell
    # Recreate with all needed names
-   $cert = New-SelfSignedCertificate -DnsName "base","localhost","192.168.86.40","server.local" -CertStoreLocation "cert:\LocalMachine\My"
+   $cert = New-SelfSignedCertificate -DnsName "base","localhost","[INTERNAL-IP]","server.local" -CertStoreLocation "cert:\LocalMachine\My"
    ```
 
 3. **Check certificate is not expired:**
@@ -175,7 +175,7 @@ Import-Certificate -FilePath "base-ca.cer" -CertStoreLocation "cert:\LocalMachin
 Get-ChildItem -Path "cert:\LocalMachine\Root" | Where-Object { $_.Subject -like "*base*" }
 
 # Test HTTPS connection
-Invoke-WebRequest -Uri "https://192.168.86.40:8443" -UseBasicParsing
+Invoke-WebRequest -Uri "https://[INTERNAL-IP]:8443" -UseBasicParsing
 
 # Remove certificate (if needed)
 Get-ChildItem -Path "cert:\LocalMachine\Root" | Where-Object { $_.Subject -like "*base*" } | Remove-Item

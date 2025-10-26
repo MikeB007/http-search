@@ -1,27 +1,27 @@
 # 🌐 Reverse Proxy SSL Setup Guide
 
 ## 📚 Your Setup
-- **Internal Server**: `https://192.168.86.40:8443` (your base server)
-- **Public Proxy**: `https://147.194.240.208:9090` (internet-facing)
-- **Goal**: Make `https://147.194.240.208:9090` show as secure/trusted
+- **Internal Server**: `https://[INTERNAL-IP]:8443` (your base server)
+- **Public Proxy**: `https://[PUBLIC-IP]:9090` (internet-facing)
+- **Goal**: Make `https://[PUBLIC-IP]:9090` show as secure/trusted
 
 ## 🎯 The Problem
-Your certificate is for `192.168.86.40` but users access `147.194.240.208:9090`, causing "Not Secure" warnings.
+Your certificate is for `[INTERNAL-IP]` but users access `[PUBLIC-IP]:9090`, causing "Not Secure" warnings.
 
 ## ✅ Solution: Two-Step Process
 
 ### **Step 1: Update Internal Server Certificate**
-Run this on your **internal server (192.168.86.40)**:
+Run this on your **internal server ([INTERNAL-IP])**:
 
 ```powershell
 # Download and run the proxy certificate setup
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MikeB007/http-search/master/scripts/setup-proxy-certificate.ps1" -OutFile "setup-proxy.ps1"
-.\setup-proxy.ps1 -PublicIP "147.194.240.208" -PublicPort "9090" -InternalIP "192.168.86.40" -InternalPort "8443"
+.\setup-proxy.ps1 -PublicIP "[PUBLIC-IP]" -PublicPort "9090" -InternalIP "[INTERNAL-IP]" -InternalPort "8443"
 ```
 
 This creates a certificate that's valid for **both** IPs:
-- ✅ `192.168.86.40:8443` (internal)
-- ✅ `147.194.240.208:9090` (public)
+- ✅ `[INTERNAL-IP]:8443` (internal)
+- ✅ `[PUBLIC-IP]:9090` (public)
 
 ### **Step 2: Configure Your Proxy Server**
 
@@ -30,22 +30,22 @@ This creates a certificate that's valid for **both** IPs:
 **Copy the certificate to your proxy server:**
 ```bash
 # Copy from internal server to proxy server
-scp root@192.168.86.40:/opt/http-search/certs/proxy-ca.cer /etc/ssl/certs/
-scp root@192.168.86.40:/opt/http-search/certs/production.p12 /etc/ssl/private/
+scp root@[INTERNAL-IP]:/opt/http-search/certs/proxy-ca.cer /etc/ssl/certs/
+scp root@[INTERNAL-IP]:/opt/http-search/certs/production.p12 /etc/ssl/private/
 ```
 
 **Configure your proxy (Nginx example):**
 ```nginx
 server {
     listen 9090 ssl;
-    server_name 147.194.240.208;
+    server_name [PUBLIC-IP];
     
     # Use the same certificate as internal server
     ssl_certificate /etc/ssl/certs/proxy-ca.cer;
     ssl_certificate_key /etc/ssl/private/production.p12;
     
     location / {
-        proxy_pass https://192.168.86.40:8443;
+        proxy_pass https://[INTERNAL-IP]:8443;
         proxy_ssl_verify off;  # Since we trust our internal server
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -58,15 +58,15 @@ server {
 #### **Option B: Apache Proxy Configuration**
 ```apache
 <VirtualHost *:9090>
-    ServerName 147.194.240.208
+    ServerName [PUBLIC-IP]
     
     SSLEngine on
     SSLCertificateFile /etc/ssl/certs/proxy-ca.cer
     SSLCertificateKeyFile /etc/ssl/private/production.key
     
     ProxyPreserveHost On
-    ProxyPass / https://192.168.86.40:8443/
-    ProxyPassReverse / https://192.168.86.40:8443/
+    ProxyPass / https://[INTERNAL-IP]:8443/
+    ProxyPassReverse / https://[INTERNAL-IP]:8443/
     
     # Don't verify internal SSL since we control it
     SSLProxyEngine on
@@ -79,7 +79,7 @@ server {
 #### **Option C: Simple HAProxy Configuration**
 ```
 backend internal_server
-    server internal 192.168.86.40:8443 check ssl verify none
+    server internal [INTERNAL-IP]:8443 check ssl verify none
 
 frontend public_frontend
     bind *:9090 ssl crt /etc/ssl/private/production.pem
@@ -93,7 +93,7 @@ frontend public_frontend
 ```powershell
 # Download and install the certificate as trusted
 Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MikeB007/http-search/master/scripts/install-trusted-certificate.ps1" -OutFile "install-cert.ps1"
-.\install-cert.ps1 -ServerIP "147.194.240.208"
+.\install-cert.ps1 -ServerIP "[PUBLIC-IP]"
 ```
 
 **Or manually:**
@@ -106,10 +106,10 @@ Import-Certificate -FilePath "proxy-ca.cer" -CertStoreLocation "cert:\LocalMachi
 
 ## 🚀 **Quick Setup Commands**
 
-### **On Internal Server (192.168.86.40):**
+### **On Internal Server ([INTERNAL-IP]):**
 ```powershell
 # Create certificate for both internal and public access
-$cert = New-SelfSignedCertificate -DnsName "192.168.86.40","147.194.240.208","base","localhost" -CertStoreLocation "cert:\LocalMachine\My" -Subject "CN=147.194.240.208"
+$cert = New-SelfSignedCertificate -DnsName "[INTERNAL-IP]","[PUBLIC-IP]","base","localhost" -CertStoreLocation "cert:\LocalMachine\My" -Subject "CN=[PUBLIC-IP]"
 
 # Export for application
 $pw = ConvertTo-SecureString -String "production123" -Force -AsPlainText
@@ -147,17 +147,17 @@ Import-Certificate -FilePath "proxy-ca.cer" -CertStoreLocation "cert:\LocalMachi
 
 1. **Test internal access:**
    ```powershell
-   Invoke-WebRequest -Uri "https://192.168.86.40:8443" -UseBasicParsing
+   Invoke-WebRequest -Uri "https://[INTERNAL-IP]:8443" -UseBasicParsing
    ```
 
 2. **Test public access:**
    ```powershell
-   Invoke-WebRequest -Uri "https://147.194.240.208:9090" -UseBasicParsing
+   Invoke-WebRequest -Uri "https://[PUBLIC-IP]:9090" -UseBasicParsing
    ```
 
 3. **Browser test:**
    - Open browser
-   - Go to `https://147.194.240.208:9090`
+   - Go to `https://[PUBLIC-IP]:9090`
    - Should show **secure lock icon**
    - No certificate warnings
 
@@ -170,7 +170,7 @@ Import-Certificate -FilePath "proxy-ca.cer" -CertStoreLocation "cert:\LocalMachi
 1. **Check certificate includes public IP:**
    ```powershell
    # On internal server
-   $cert = Get-ChildItem -Path "cert:\LocalMachine\My" | Where-Object { $_.Subject -like "*147.194.240.208*" }
+   $cert = Get-ChildItem -Path "cert:\LocalMachine\My" | Where-Object { $_.Subject -like "*[PUBLIC-IP]*" }
    $cert.DnsNameList
    ```
 
@@ -182,8 +182,8 @@ Import-Certificate -FilePath "proxy-ca.cer" -CertStoreLocation "cert:\LocalMachi
 ### **Certificate Not Working?**
 
 1. **Ensure certificate includes all needed names:**
-   - `147.194.240.208`
-   - `192.168.86.40`
+   - `[PUBLIC-IP]`
+   - `[INTERNAL-IP]`
    - Any domain names used
 
 2. **Check proxy configuration:**
@@ -196,7 +196,7 @@ Import-Certificate -FilePath "proxy-ca.cer" -CertStoreLocation "cert:\LocalMachi
 ## ✅ **Expected Result**
 
 After setup:
-- ✅ `https://147.194.240.208:9090` shows as **secure**
+- ✅ `https://[PUBLIC-IP]:9090` shows as **secure**
 - ✅ Green lock icon in browser
 - ✅ No certificate warnings
 - ✅ Users can access your app through the public proxy

@@ -6,7 +6,7 @@
 Open Chrome, Edge, Firefox, or Safari
 
 ### **Step 2: Go to the Application**
-Type in the address bar: `https://147.194.240.208:8443`
+Type in the address bar: `https://[PUBLIC-IP]:8443`
 
 ### **Step 3: Handle Security Warning (One Time Only)**
 
@@ -15,7 +15,7 @@ You'll see a security warning because we use a private certificate. This is norm
 #### **Chrome/Edge:**
 1. You'll see "Your connection is not private"
 2. Click **"Advanced"**
-3. Click **"Continue to 147.194.240.208 (unsafe)"**
+3. Click **"Continue to [PUBLIC-IP] (unsafe)"**
 
 #### **Firefox:**
 1. You'll see "Warning: Potential Security Risk Ahead"
@@ -51,7 +51,7 @@ A: No! Only the first time. After accepting the certificate, your browser rememb
 A: Ask your IT administrator to install the certificate, or follow the one-time instructions above.
 
 **Q: The page won't load**
-A: Make sure you're using `https://147.194.240.208:8443` (with https and the port number 8443)
+A: Make sure you're using `https://[PUBLIC-IP]:8443` (with https and the port number 8443)
 
 ---
 

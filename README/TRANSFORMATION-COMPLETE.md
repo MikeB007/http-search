@@ -34,8 +34,8 @@ npm install && npm run serve:auto
 - ✅ **Production deployment instructions**
 
 ### 🌐 **Network Configuration Ready**
-- ✅ **Public IP configured**: 147.194.240.208:9090 (router proxy)
-- ✅ **Internal IP configured**: 192.168.86.40:8443 (base server)
+- ✅ **Public IP configured**: [PUBLIC-IP]:9090 (router proxy)
+- ✅ **Internal IP configured**: [INTERNAL-IP]:8443 (base server)
 - ✅ **Automatic host detection** and certificate generation
 - ✅ **HTTPS-first with HTTP redirect**
 
@@ -58,7 +58,7 @@ npm run prod:docker
 This will:
 1. Build optimized Docker container
 2. Auto-generate certificates inside container
-3. Configure for production IPs (147.194.240.208 & 192.168.86.40)
+3. Configure for production IPs ([PUBLIC-IP] & [INTERNAL-IP])
 4. Start with auto-restart and health checks
 
 ### **Development Mode**
@@ -73,8 +73,8 @@ For live development with hot-reload capabilities.
 |-------------|-----|-------------|
 | **Local HTTPS** | https://localhost:8443 | Main application |
 | **Local HTTP** | http://localhost:8080 | Redirects to HTTPS |
-| **Base Server** | https://192.168.86.40:8443 | Internal network |
-| **Public Access** | https://147.194.240.208:9090 | Router proxy |
+| **Base Server** | https://[INTERNAL-IP]:8443 | Internal network |
+| **Public Access** | https://[PUBLIC-IP]:9090 | Router proxy |
 
 ## 📁 What Changed
 
@@ -107,7 +107,7 @@ For live development with hot-reload capabilities.
 
 ## 🎯 Production Deployment
 
-For deployment to your base server (192.168.86.40):
+For deployment to your base server ([INTERNAL-IP]):
 
 1. **Clone the repository** on the target server
 2. **Run the one-command setup**:
@@ -115,7 +115,7 @@ For deployment to your base server (192.168.86.40):
    npm install && npm run prod:docker
    ```
 3. **Configure router** port forwarding: 9090 → 8443
-4. **Access from anywhere** via https://147.194.240.208:9090
+4. **Access from anywhere** via https://[PUBLIC-IP]:9090
 
 ## 🚨 Troubleshooting
 

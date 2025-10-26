@@ -69,7 +69,7 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 # Configure for router proxy access
 .\WIN_SCRIPTS\setup-proxy-certificate.ps1
 ```
-- Sets up certificates for public IP access (147.194.240.208)
+- Sets up certificates for public IP access ([YOUR-PUBLIC-IP])
 - Configures router proxy compatibility
 - Tests external connectivity
 

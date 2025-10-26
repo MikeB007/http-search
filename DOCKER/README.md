@@ -71,8 +71,8 @@ SSL_PASSPHRASE=production123
 PFX_PATH=/app/certs/production.p12
 
 # Network Configuration
-PUBLIC_IP=147.194.240.208    # Router/proxy IP
-INTERNAL_IP=192.168.86.40    # Base server IP
+PUBLIC_IP=[YOUR-PUBLIC-IP]    # Router/proxy IP
+INTERNAL_IP=[YOUR-INTERNAL-IP]    # Base server IP
 
 # Server Configuration  
 NODE_ENV=production

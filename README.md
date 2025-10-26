@@ -4,22 +4,27 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Live Demo
 
-🚀 **Deployed at:** https://mikeb007.github.io/http-search/
+🚀 **Deployed at:** https://mikeb007.github.io/http-search/#/search/Bitcoin
 
-## Mixed Content / CORS Proxy
+Example searches:
+- [Bitcoin News](https://mikeb007.github.io/http-search/#/search/Bitcoin)
+- [Gold Market](https://mikeb007.github.io/http-search/#/search/Gold)
+- [Technology Updates](https://mikeb007.github.io/http-search/#/search/Technology)
+
+**Mixed Content / CORS Proxy**
 
 The production build uses a CORS proxy (AllOrigins) to work around Mixed Content errors when accessing HTTP backend from HTTPS GitHub Pages.
 
-- **Development:** Direct HTTP connection to `http://147.194.240.208:5000`
+- **Development:** Direct HTTP connection to `http://[SERVER-IP]:[PORT]`
 - **Production:** Proxied through `https://api.allorigins.win/raw?url=...`
 
-### Alternative Solutions
+## Alternative Solutions
 
 If the proxy service is slow or unavailable:
 
 1. **Use HTTP access** (if available) instead of HTTPS
-2. **Set up HTTPS on backend** at 147.194.240.208:5000 with SSL certificate
-3. **Use a different proxy**:
+2. **Set up HTTPS on backend** at `[SERVER-IP]:[PORT]` with SSL certificate
+3. **Use a different proxy:**
    - Update `src/app/_environments/environment.prod.ts`
    - Options: `cors-anywhere.herokuapp.com`, `corsproxy.io`, or deploy your own
 

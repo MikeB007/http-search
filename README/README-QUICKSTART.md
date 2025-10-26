@@ -23,7 +23,7 @@ npm run docker:run
 This command will:
 - ✅ Build Docker container with automatic certificate generation
 - ✅ Configure production environment variables
-- ✅ Start with proper IP configuration (internal: 192.168.86.40, public: 147.194.240.208)
+- ✅ Start with proper IP configuration (internal: [INTERNAL-IP], public: [PUBLIC-IP])
 - ✅ Set up health checks and auto-restart
 
 ### Option 3: Production Ready
@@ -31,8 +31,8 @@ This command will:
 npm run prod:docker
 ```
 This command runs with full production configuration including:
-- ✅ Public IP: 147.194.240.208 (router proxy)
-- ✅ Internal IP: 192.168.86.40 (base server)
+- ✅ Public IP: [PUBLIC-IP] (router proxy)
+- ✅ Internal IP: [INTERNAL-IP] (base server)
 - ✅ Production-grade SSL certificates
 - ✅ Automatic port forwarding support
 
@@ -44,8 +44,8 @@ After starting the application, it will be available at:
 |-------------|-----|-------------|
 | **Local Development** | https://localhost:8443 | Direct HTTPS access |
 | **Local HTTP** | http://localhost:8080 | Redirects to HTTPS |
-| **Internal Network** | https://192.168.86.40:8443 | Base server access |
-| **Public Access** | https://147.194.240.208:9090 | Router proxy → :8443 |
+| **Internal Network** | https://[INTERNAL-IP]:8443 | Base server access |
+| **Public Access** | https://[PUBLIC-IP]:9090 | Router proxy → :8443 |
 
 ## 📋 Prerequisites
 
@@ -135,8 +135,8 @@ SSL_PASSPHRASE=production123
 PFX_PATH=./certs/production.p12
 
 # Network Configuration  
-PUBLIC_IP=147.194.240.208    # Router/proxy IP
-INTERNAL_IP=192.168.86.40    # Base server IP
+PUBLIC_IP=[YOUR-PUBLIC-IP]    # Router/proxy IP
+INTERNAL_IP=[YOUR-INTERNAL-IP]    # Base server IP
 
 # Server Configuration
 NODE_ENV=production
@@ -149,8 +149,8 @@ HTTPS_PORT=8443
 Create a `.env` file for Docker Compose:
 ```bash
 SSL_PASSPHRASE=production123
-PUBLIC_IP=147.194.240.208
-INTERNAL_IP=192.168.86.40
+PUBLIC_IP=[YOUR-PUBLIC-IP]
+INTERNAL_IP=[YOUR-INTERNAL-IP]
 ```
 
 ## 🔒 Security Notes
@@ -220,10 +220,10 @@ docker logs http-search-server
 ### Network Access Issues
 ```bash
 # Test internal access
-curl -k https://192.168.86.40:8443
+curl -k https://[INTERNAL-IP]:8443
 
 # Test public access (through router)
-curl -k https://147.194.240.208:9090
+curl -k https://[PUBLIC-IP]:9090
 
 # Check firewall (Windows)
 netsh advfirewall firewall show rule name="HTTP Search"
@@ -231,7 +231,7 @@ netsh advfirewall firewall show rule name="HTTP Search"
 
 ## 🎯 Production Deployment
 
-For production deployment on the base server (192.168.86.40):
+For production deployment on the base server ([INTERNAL-IP]):
 
 1. **Clone repository** on target server
 2. **Run automatic setup**:
