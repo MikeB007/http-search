@@ -104,7 +104,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:8080"    # HTTP redirect
-      - "443:8443"   # HTTPS main port
+      - "8443:8443"  # HTTPS main port
     environment:
       - NODE_ENV=production
       - PFX_PATH=/app/certs/production.p12
@@ -176,7 +176,7 @@ docker exec http-search-production node -e "require('https').get('https://localh
 ```powershell
 # Allow HTTP and HTTPS through Windows Firewall
 New-NetFirewallRule -DisplayName "HTTP Search - HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
-New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow
+New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 8443 -Action Allow
 
 Write-Host "✓ Firewall rules added"
 ```
@@ -187,14 +187,14 @@ Write-Host "✓ Firewall rules added"
 
 ### From Any Web Browser
 1. Open web browser
-2. Go to: `https://base` or `https://your-server-ip`
+2. Go to: `https://base:8443` or `https://your-server-ip:8443`
 3. You'll see a security warning (self-signed certificate)
 4. Click "Advanced" → "Continue to base (unsafe)"
 5. Your HTTP Search application should load!
 
 ### From Network Computers
-- `https://base` (if DNS is configured)
-- `https://192.168.1.100` (replace with actual server IP)
+- `https://base:8443` (if DNS is configured)
+- `https://192.168.1.100:8443` (replace with actual server IP)
 
 ---
 

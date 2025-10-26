@@ -59,7 +59,7 @@ docker run -d ``
   --name http-search-production ``
   --restart unless-stopped ``
   -p 80:8080 ``
-  -p 443:8443 ``
+  -p 8443:8443 ``
   -e NODE_ENV=production ``
   -e PFX_PATH=/app/certs/production.p12 ``
   -e SSL_PASSPHRASE=$CertPassword ``
@@ -97,7 +97,7 @@ docker run -d ``
     
     try {
         [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-        $response = Invoke-WebRequest -Uri "https://localhost:443" -TimeoutSec 15 -UseBasicParsing
+        $response = Invoke-WebRequest -Uri "https://localhost:8443" -TimeoutSec 15 -UseBasicParsing
         
         if ($response.StatusCode -eq 200) {
             Write-Host "✅ SUCCESS! Application is responding" -ForegroundColor Green
@@ -117,7 +117,7 @@ docker run -d ``
     Remove-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -ErrorAction SilentlyContinue
     
     New-NetFirewallRule -DisplayName "HTTP Search - HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow | Out-Null
-    New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow | Out-Null
+    New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 8443 -Action Allow | Out-Null
     
     Write-Host "✓ Firewall configured" -ForegroundColor Green
 
@@ -127,9 +127,9 @@ docker run -d ``
     Write-Host "=========================" -ForegroundColor Cyan
     Write-Host ""
     Write-Host "📍 Access your application:" -ForegroundColor Cyan
-    Write-Host "  • https://localhost" -ForegroundColor White
-    Write-Host "  • https://$ServerIP" -ForegroundColor White
-    Write-Host "  • https://base (if DNS is configured)" -ForegroundColor White
+    Write-Host "  • https://localhost:8443" -ForegroundColor White
+    Write-Host "  • https://$ServerIP:8443" -ForegroundColor White
+    Write-Host "  • https://base:8443 (if DNS is configured)" -ForegroundColor White
     Write-Host ""
     Write-Host "🔧 Useful commands:" -ForegroundColor Cyan
     Write-Host "  • Check status:    docker ps" -ForegroundColor White

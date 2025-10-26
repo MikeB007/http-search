@@ -76,9 +76,6 @@ try {
     # Step 4: Create Windows-optimized compose file
     Write-Host "📝 Creating Windows-optimized compose file..." -ForegroundColor Yellow
     
-    # Convert Windows paths to Unix-style for Docker
-    $deployPathUnix = $DeployPath -replace '\\', '/' -replace 'C:', '/c'
-    
     $windowsCompose = @"
 version: '3.8'
 
@@ -89,7 +86,7 @@ services:
     restart: unless-stopped
     ports:
       - "80:8080"    # HTTP redirect
-      - "443:8443"   # HTTPS main port
+      - "8443:8443"  # HTTPS main port
     environment:
       - NODE_ENV=production
       - PFX_PATH=/app/certs/production.p12
@@ -157,7 +154,7 @@ networks:
         
         # Create new firewall rules
         New-NetFirewallRule -DisplayName "HTTP Search - HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow | Out-Null
-        New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 443 -Action Allow | Out-Null
+        New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 8443 -Action Allow | Out-Null
         
         Write-Host "✓ Firewall rules configured" -ForegroundColor Green
     } catch {
@@ -222,12 +219,10 @@ networks:
     # Step 10: Test the application
     Write-Host "🧪 Testing application..." -ForegroundColor Yellow
     
-    try {
-        # Ignore SSL certificate validation for testing
-        [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
-        $response = Invoke-WebRequest -Uri "https://localhost:443" -TimeoutSec 10 -UseBasicParsing
-        
-        if ($response.StatusCode -eq 200) {
+        try {
+            # Ignore SSL certificate validation for testing
+            [System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+            $response = Invoke-WebRequest -Uri "https://localhost:8443" -TimeoutSec 10 -UseBasicParsing        if ($response.StatusCode -eq 200) {
             Write-Host "✓ Application responding successfully!" -ForegroundColor Green
         } else {
             Write-Host "⚠️ Application responding with status: $($response.StatusCode)" -ForegroundColor Yellow
@@ -241,17 +236,15 @@ networks:
     Write-Host "🎉 Deployment completed successfully!" -ForegroundColor Green
     Write-Host "================================================" -ForegroundColor Cyan
     Write-Host ""
-    Write-Host "📍 Application URLs:" -ForegroundColor Cyan
-    Write-Host "  • https://$ServerName" -ForegroundColor White
-    Write-Host "  • https://localhost" -ForegroundColor White
-    
-    # Get server IP addresses
-    $ipAddresses = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -ne "127.0.0.1" } | Select-Object -ExpandProperty IPAddress
-    foreach ($ip in $ipAddresses) {
-        Write-Host "  • https://$ip" -ForegroundColor White
-    }
-    
-    Write-Host ""
+        Write-Host "📍 Application URLs:" -ForegroundColor Cyan
+        Write-Host "  • https://$ServerName:8443" -ForegroundColor White
+        Write-Host "  • https://localhost:8443" -ForegroundColor White
+        
+        # Get server IP addresses
+        $ipAddresses = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -ne "127.0.0.1" } | Select-Object -ExpandProperty IPAddress
+        foreach ($ip in $ipAddresses) {
+            Write-Host "  • https://$ip:8443" -ForegroundColor White
+        }    Write-Host ""
     Write-Host "📂 Deployment files located at:" -ForegroundColor Cyan
     Write-Host "  $DeployPath" -ForegroundColor White
     Write-Host ""
