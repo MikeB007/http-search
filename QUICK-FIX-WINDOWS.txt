@@ -1,0 +1,16 @@
+# Quick Fix for Windows Base Server SSL Error
+# Copy and paste this command into PowerShell (as Administrator) on your Windows base server:
+
+Invoke-WebRequest -Uri "https://raw.githubusercontent.com/MikeB007/http-search/master/scripts/quick-deploy-windows.ps1" -OutFile "quick-deploy.ps1"; .\quick-deploy.ps1 -ServerIP "192.168.86.40"
+
+# This will:
+# 1. Download the deployment script
+# 2. Create SSL certificates 
+# 3. Start your HTTP Search application with proper certificate paths
+# 4. Configure firewall
+# 5. Test that everything works
+
+# Alternative manual fix if the above doesn't work:
+# 1. Create certificate directory: New-Item -ItemType Directory -Force -Path "C:\opt\http-search\certs"
+# 2. Create certificate: $cert = New-SelfSignedCertificate -DnsName "base","localhost","192.168.86.40" -CertStoreLocation "cert:\LocalMachine\My"; $pw = ConvertTo-SecureString -String "production123" -Force -AsPlainText; Export-PfxCertificate -Cert $cert -FilePath "C:\opt\http-search\certs\production.p12" -Password $pw
+# 3. Run container: docker run -d --name http-search-production --restart unless-stopped -p 80:8080 -p 443:8443 -e NODE_ENV=production -e PFX_PATH=/app/certs/production.p12 -e SSL_PASSPHRASE=production123 -e NODE_OPTIONS=--openssl-legacy-provider -v "C:\opt\http-search\certs:/app/certs:ro" ghcr.io/mikeb007/http-search:latest
