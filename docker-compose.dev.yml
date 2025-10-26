@@ -14,14 +14,16 @@ services:
       - "4200:4200"  # Angular dev server
     environment:
       - NODE_ENV=development
-      - PFX_PATH=/app/certs/localhost.p12
-      - SSL_PASSPHRASE=dev123
+      - PFX_PATH=/app/certs/production.p12
+      - SSL_PASSPHRASE=production123
+      - PUBLIC_IP=${PUBLIC_IP:-localhost}
+      - INTERNAL_IP=${INTERNAL_IP:-127.0.0.1}
     volumes:
       # Mount source code for development
       - .:/app
       - /app/node_modules
-      # Mount certificate directory
-      - ./certs:/app/certs:ro
+      # Mount certificate directory (certificates will be auto-generated if not provided)
+      - ./certs:/app/certs
     networks:
       - http-search-network
     command: ["npm", "run", "start"]

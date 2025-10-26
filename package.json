@@ -11,12 +11,18 @@
     "test:ci": "ng test --watch=false --browsers=ChromeHeadless",
     "lint": "ng lint || echo 'Lint not configured'",
     "serve:https": "node server.js",
+    "serve:auto": "node start-application.js",
     "docker:build": "docker build -t http-search .",
-    "docker:run": "docker-compose up -d",
-    "docker:dev": "docker-compose -f docker-compose.dev.yml up",
+    "docker:run": "docker-compose up --build",
+    "docker:run:detached": "docker-compose up -d --build",
+    "docker:dev": "docker-compose -f docker-compose.dev.yml up --build",
     "docker:stop": "docker-compose down",
     "docker:logs": "docker-compose logs -f",
-    "setup:certs": "node scripts/setup-certificates.js"
+    "docker:clean": "docker-compose down -v --rmi all",
+    "setup:certs": "node scripts/setup-certificates.js",
+    "setup:auto": "node scripts/setup-certificates.js && node server.js",
+    "prod:start": "npm run setup:certs && PUBLIC_IP=147.194.240.208 INTERNAL_IP=192.168.86.40 node server.js",
+    "prod:docker": "PUBLIC_IP=147.194.240.208 INTERNAL_IP=192.168.86.40 SSL_PASSPHRASE=production123 docker-compose up --build"
   },
   "private": true,
   "dependencies": {

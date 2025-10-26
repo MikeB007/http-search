@@ -1,6 +1,9 @@
 # Multi-stage build for Angular + Node.js HTTPS server
 FROM node:18-alpine AS builder
 
+# Install OpenSSL for certificate generation
+RUN apk add --no-cache openssl
+
 # Set working directory
 WORKDIR /app
 
@@ -19,6 +22,9 @@ RUN NODE_OPTIONS="--openssl-legacy-provider" npm run build
 # Production stage
 FROM node:18-alpine AS production
 
+# Install OpenSSL for certificate generation at runtime
+RUN apk add --no-cache openssl
+
 # Create app user for security
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nextjs -u 1001
@@ -31,12 +37,16 @@ COPY --from=builder --chown=nextjs:nodejs /app/dist ./dist
 COPY --from=builder --chown=nextjs:nodejs /app/server.js ./
 COPY --from=builder --chown=nextjs:nodejs /app/package*.json ./
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules ./node_modules
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 
 # Create directory for SSL certificates
 RUN mkdir -p /app/certs && chown nextjs:nodejs /app/certs
 
 # Switch to non-root user
 USER nextjs
+
+# Generate SSL certificates on container startup
+RUN node scripts/setup-certificates.js
 
 # Expose ports
 EXPOSE 8080 8443

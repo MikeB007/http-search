@@ -12,11 +12,13 @@ services:
       - "8443:8443"
     environment:
       - NODE_ENV=production
-      - PFX_PATH=/app/certs/localhost.p12
-      - SSL_PASSPHRASE=${SSL_PASSPHRASE:-dev123}
+      - PFX_PATH=/app/certs/production.p12
+      - SSL_PASSPHRASE=${SSL_PASSPHRASE:-production123}
+      - PUBLIC_IP=${PUBLIC_IP:-147.194.240.208}
+      - INTERNAL_IP=${INTERNAL_IP:-192.168.86.40}
     volumes:
-      # Mount certificate directory
-      - ./certs:/app/certs:ro
+      # Optional: mount certificate directory (certificates will be auto-generated if not provided)
+      - ./certs:/app/certs
       # Optional: mount logs directory
       - ./logs:/app/logs
     networks:

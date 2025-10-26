@@ -3,119 +3,271 @@ const path = require('path');
 const { execSync } = require('child_process');
 
 /**
- * Certificate setup script for development and production
+ * Automatic SSL Certificate Setup for HTTP Search
+ * Creates self-signed certificates for development and production
  */
 
-const certsDir = path.join(__dirname, '..', 'certs');
+// Configuration
+const CERT_DIR = process.env.CERT_DIR || path.join(__dirname, '..', 'certs');
+const CERT_PASSWORD = process.env.SSL_PASSPHRASE || 'production123';
+const isProduction = process.env.NODE_ENV === 'production';
 const isWindows = process.platform === 'win32';
+const isDocker = fs.existsSync('/.dockerenv');
+
+console.log('🔐 HTTP Search - SSL Certificate Setup');
+console.log('=====================================');
+console.log(`Environment: ${isProduction ? 'Production' : 'Development'}`);
+console.log(`Platform: ${isWindows ? 'Windows' : 'Unix/Linux'}`);
+console.log(`Docker: ${isDocker ? 'Yes' : 'No'}`);
 
 function ensureCertsDirectory() {
-  if (!fs.existsSync(certsDir)) {
-    fs.mkdirSync(certsDir, { recursive: true });
-    console.log('✓ Created certs directory');
+  if (!fs.existsSync(CERT_DIR)) {
+    fs.mkdirSync(CERT_DIR, { recursive: true });
+    console.log(`✓ Created certificate directory: ${CERT_DIR}`);
   }
 }
 
-function createSelfSignedCert() {
-  const certPath = path.join(certsDir, 'localhost.p12');
+function getCertificateHosts() {
+  const hosts = ['localhost', '127.0.0.1', 'base'];
+  
+  // Add environment-specific hosts
+  if (process.env.PUBLIC_IP) {
+    hosts.push(process.env.PUBLIC_IP);
+  }
+  
+  if (process.env.INTERNAL_IP && process.env.INTERNAL_IP !== process.env.PUBLIC_IP) {
+    hosts.push(process.env.INTERNAL_IP);
+  }
+  
+  // Add container hostname if in Docker
+  if (isDocker) {
+    try {
+      const hostname = execSync('hostname', { encoding: 'utf8' }).trim();
+      if (hostname && !hosts.includes(hostname)) {
+        hosts.push(hostname);
+      }
+    } catch (e) {
+      // Ignore hostname detection errors
+    }
+  }
+  
+  return hosts;
+}
+
+function createCertificateWithOpenSSL() {
+  const hosts = getCertificateHosts();
+  const certPath = path.join(CERT_DIR, 'production.p12');
+  const keyPath = path.join(CERT_DIR, 'private-key.pem');
+  const certPemPath = path.join(CERT_DIR, 'certificate.pem');
+  const configPath = path.join(CERT_DIR, 'openssl.conf');
   
   if (fs.existsSync(certPath)) {
-    console.log('✓ Certificate already exists at:', certPath);
-    return;
+    console.log(`✓ Certificate already exists: ${certPath}`);
+    return certPath;
   }
 
-  console.log('🔐 Creating self-signed certificate...');
-
-  if (isWindows) {
-    // Use PowerShell on Windows
-    const psScript = `
-      $cert = New-SelfSignedCertificate -DnsName "localhost", "127.0.0.1" -CertStoreLocation "cert:\\CurrentUser\\My" -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 -NotAfter (Get-Date).AddYears(1)
-      $pw = ConvertTo-SecureString -String "dev123" -Force -AsPlainText
-      Export-PfxCertificate -Cert $cert -FilePath "${certPath.replace(/\\/g, '\\\\')}" -Password $pw
-    `;
-    
-    try {
-      execSync(`powershell -Command "${psScript}"`, { stdio: 'inherit' });
-      console.log('✓ Self-signed certificate created successfully');
-    } catch (error) {
-      console.error('❌ Failed to create certificate with PowerShell:', error.message);
-      console.log('💡 Please run this script as administrator or create the certificate manually');
-    }
-  } else {
-    // Use OpenSSL on Unix-like systems
-    try {
-      const keyPath = path.join(certsDir, 'localhost.key');
-      const certPemPath = path.join(certsDir, 'localhost.crt');
-      
-      // Generate private key and certificate
-      execSync(`openssl req -x509 -newkey rsa:4096 -sha256 -days 365 -nodes -keyout "${keyPath}" -out "${certPemPath}" -subj "/CN=localhost" -addext "subjectAltName=DNS:localhost,IP:127.0.0.1"`, { stdio: 'inherit' });
-      
-      // Convert to PKCS#12
-      execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:dev123`, { stdio: 'inherit' });
-      
-      console.log('✓ Self-signed certificate created successfully');
-    } catch (error) {
-      console.error('❌ Failed to create certificate with OpenSSL:', error.message);
-      console.log('💡 Please install OpenSSL or create the certificate manually');
-    }
-  }
-}
-
-function createDockerCertsSetup() {
-  const dockerCertsPath = path.join(certsDir, 'localhost.p12');
-  const envExamplePath = path.join(__dirname, '..', '.env.example');
+  console.log('📝 Creating SSL certificate...');
+  console.log(`Valid for hosts: ${hosts.join(', ')}`);
   
-  // Create .env.example file
-  const envContent = `# SSL Certificate Configuration
-PFX_PATH=./certs/localhost.p12
-SSL_PASSPHRASE=dev123
+  // Create OpenSSL config
+  const dnsEntries = hosts.filter(h => !h.match(/^\d+\.\d+\.\d+\.\d+$/)).map((h, i) => `DNS.${i + 1} = ${h}`).join('\n');
+  const ipEntries = hosts.filter(h => h.match(/^\d+\.\d+\.\d+\.\d+$/)).map((h, i) => `IP.${i + 1} = ${h}`).join('\n');
+  
+  const opensslConfig = `
+[req]
+distinguished_name = req_distinguished_name
+req_extensions = v3_req
+prompt = no
 
-# Development vs Production
-NODE_ENV=development
+[req_distinguished_name]
+CN = ${hosts[0]}
+O = HTTP Search Application
+OU = Development Team
 
-# Server Configuration
-HTTP_PORT=8080
-HTTPS_PORT=8443
+[v3_req]
+keyUsage = critical, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth
+subjectAltName = @alt_names
+
+[alt_names]
+${dnsEntries}
+${ipEntries}
 `;
 
-  fs.writeFileSync(envExamplePath, envContent);
-  console.log('✓ Created .env.example file');
-
-  // Copy certificate to certs directory if it exists in root
-  const rootCertPath = path.join(__dirname, '..', 'localhost.p12');
-  if (fs.existsSync(rootCertPath) && !fs.existsSync(dockerCertsPath)) {
-    fs.copyFileSync(rootCertPath, dockerCertsPath);
-    console.log('✓ Copied certificate to certs directory');
+  try {
+    // Write OpenSSL config
+    fs.writeFileSync(configPath, opensslConfig);
+    
+    // Generate private key and certificate
+    execSync(`openssl req -x509 -newkey rsa:2048 -keyout "${keyPath}" -out "${certPemPath}" -days 365 -nodes -config "${configPath}"`, { stdio: 'pipe' });
+    
+    // Create PKCS#12 bundle
+    execSync(`openssl pkcs12 -export -out "${certPath}" -inkey "${keyPath}" -in "${certPemPath}" -passout pass:${CERT_PASSWORD}`, { stdio: 'pipe' });
+    
+    // Clean up temporary files
+    fs.unlinkSync(keyPath);
+    fs.unlinkSync(certPemPath);
+    fs.unlinkSync(configPath);
+    
+    console.log(`✓ SSL certificate created: ${certPath}`);
+    console.log(`✓ Certificate password: ${CERT_PASSWORD}`);
+    
+    return certPath;
+    
+  } catch (error) {
+    console.error('❌ OpenSSL certificate creation failed:', error.message);
+    throw error;
   }
 }
 
-function showUsageInstructions() {
-  console.log('\n📋 Usage Instructions:');
+function createCertificateWithPowerShell() {
+  const hosts = getCertificateHosts();
+  const certPath = path.join(CERT_DIR, 'production.p12');
+  
+  if (fs.existsSync(certPath)) {
+    console.log(`✓ Certificate already exists: ${certPath}`);
+    return certPath;
+  }
+
+  console.log('📝 Creating SSL certificate with PowerShell...');
+  console.log(`Valid for hosts: ${hosts.join(', ')}`);
+  
+  const dnsNames = hosts.map(h => `"${h}"`).join(',');
+  const certLocation = isProduction ? 'LocalMachine' : 'CurrentUser';
+  
+  const psScript = `
+    $dnsNames = @(${dnsNames})
+    $cert = New-SelfSignedCertificate -DnsName $dnsNames -CertStoreLocation "cert:\\${certLocation}\\My" -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 -NotAfter (Get-Date).AddYears(1) -Subject "CN=${hosts[0]}" -FriendlyName "HTTP Search Certificate"
+    $pw = ConvertTo-SecureString -String "${CERT_PASSWORD}" -Force -AsPlainText
+    Export-PfxCertificate -Cert $cert -FilePath "${certPath.replace(/\\/g, '\\\\')}" -Password $pw | Out-Null
+    Write-Host "Certificate created successfully"
+  `;
+  
+  try {
+    execSync(`powershell -Command "${psScript}"`, { stdio: 'pipe' });
+    console.log(`✓ SSL certificate created: ${certPath}`);
+    console.log(`✓ Certificate password: ${CERT_PASSWORD}`);
+    return certPath;
+  } catch (error) {
+    console.error('❌ PowerShell certificate creation failed:', error.message);
+    throw error;
+  }
+}
+
+function createDefaultCertificate() {
+  console.log('🔧 Attempting certificate creation...');
+  
+  try {
+    // Try OpenSSL first (works on most platforms)
+    return createCertificateWithOpenSSL();
+  } catch (opensslError) {
+    if (isWindows) {
+      try {
+        // Fallback to PowerShell on Windows
+        console.log('🔄 Trying PowerShell fallback...');
+        return createCertificateWithPowerShell();
+      } catch (psError) {
+        console.error('❌ Both OpenSSL and PowerShell failed');
+        throw new Error('Certificate creation failed on all available methods');
+      }
+    } else {
+      throw opensslError;
+    }
+  }
+}
+
+function createEnvironmentFile() {
+  const envPath = path.join(__dirname, '..', '.env.example');
+  const hosts = getCertificateHosts();
+  
+  const envContent = `# HTTP Search Application Configuration
+
+# SSL Certificate Settings
+PFX_PATH=./certs/production.p12
+SSL_PASSPHRASE=${CERT_PASSWORD}
+
+# Server Configuration  
+NODE_ENV=${isProduction ? 'production' : 'development'}
+HTTP_PORT=8080
+HTTPS_PORT=8443
+
+# Certificate Hosts (automatically detected)
+PUBLIC_IP=${process.env.PUBLIC_IP || ''}
+INTERNAL_IP=${process.env.INTERNAL_IP || ''}
+
+# Valid certificate hosts: ${hosts.join(', ')}
+`;
+
+  fs.writeFileSync(envPath, envContent);
+  console.log('✓ Created .env.example file');
+}
+
+function showCompletionMessage() {
+  const hosts = getCertificateHosts();
+  
   console.log('');
-  console.log('For local development:');
-  console.log('  npm run serve:https');
+  console.log('🎉 Certificate Setup Complete!');
+  console.log('==============================');
   console.log('');
-  console.log('For Docker development:');
-  console.log('  npm run docker:dev');
+  console.log('📁 Certificate Location:');
+  console.log(`   ${path.join(CERT_DIR, 'production.p12')}`);
   console.log('');
-  console.log('For Docker production:');
-  console.log('  npm run docker:run');
+  console.log('🔑 Certificate Details:');
+  console.log(`   Password: ${CERT_PASSWORD}`);
+  console.log(`   Valid for: ${hosts.join(', ')}`);
+  console.log('   Expires: 1 year from creation');
   console.log('');
-  console.log('🌐 Your application will be available at:');
-  console.log('  HTTPS: https://localhost:8443');
-  console.log('  HTTP:  http://localhost:8080 (redirects to HTTPS)');
+  console.log('🌐 Application URLs:');
+  console.log('   HTTPS: https://localhost:8443');
+  console.log('   HTTP:  http://localhost:8080 (redirects to HTTPS)');
+  
+  if (process.env.PUBLIC_IP) {
+    console.log(`   Public: https://${process.env.PUBLIC_IP}:8443`);
+  }
+  
+  if (process.env.INTERNAL_IP) {
+    console.log(`   Internal: https://${process.env.INTERNAL_IP}:8443`);
+  }
+  
   console.log('');
-  console.log('🔒 Certificate details:');
-  console.log('  File: ./certs/localhost.p12');
-  console.log('  Password: dev123');
-  console.log('  Valid for: localhost, 127.0.0.1');
+  console.log('🚀 Ready to start the application!');
 }
 
 // Main execution
-console.log('🚀 Setting up HTTP Search application certificates...');
-console.log('');
+async function main() {
+  try {
+    ensureCertsDirectory();
+    createDefaultCertificate();
+    createEnvironmentFile();
+    showCompletionMessage();
+    
+    // Exit successfully
+    process.exit(0);
+    
+  } catch (error) {
+    console.error('');
+    console.error('❌ Certificate setup failed:');
+    console.error(error.message);
+    console.error('');
+    console.error('💡 Troubleshooting steps:');
+    console.error('1. Ensure OpenSSL is installed');
+    console.error('2. On Windows, try running as administrator');
+    console.error('3. Check certificate directory permissions');
+    console.error('4. Verify environment variables are set correctly');
+    console.error('');
+    
+    process.exit(1);
+  }
+}
 
-ensureCertsDirectory();
-createSelfSignedCert();
-createDockerCertsSetup();
-showUsageInstructions();
+// Run only if called directly
+if (require.main === module) {
+  main();
+}
+
+module.exports = {
+  ensureCertsDirectory,
+  createDefaultCertificate,
+  createEnvironmentFile,
+  getCertificateHosts
+};
