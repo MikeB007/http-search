@@ -104,24 +104,26 @@ jobs:
         SERVER_USER: ${{ secrets.SERVER_USER }}
         SSL_PASSPHRASE: ${{ secrets.SSL_PASSPHRASE }}
       run: |
-        # Setup SSH key
-        mkdir -p ~/.ssh
-        echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
-        
-        # Set default values if secrets are not configured
-        SERVER_HOST=${SERVER_HOST:-"base"}
-        SERVER_USER=${SERVER_USER:-"admin"}
-        SSL_PASSPHRASE=${SSL_PASSPHRASE:-"production123"}
-        
-        echo "🚀 Deploying to $SERVER_USER@$SERVER_HOST"
-        
-        # Make deployment script executable
-        chmod +x scripts/deploy-remote.sh
-        
-        # Run deployment
+        # Check if SSH secrets are configured
         if [[ -n "$SSH_PRIVATE_KEY" && -n "$SERVER_HOST" ]]; then
+          echo "🚀 SSH secrets found - proceeding with automated deployment"
+          
+          # Setup SSH key
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H $SERVER_HOST >> ~/.ssh/known_hosts
+          
+          # Set default values for optional secrets
+          SERVER_USER=${SERVER_USER:-"admin"}
+          SSL_PASSPHRASE=${SSL_PASSPHRASE:-"production123"}
+          
+          echo "🚀 Deploying to $SERVER_USER@$SERVER_HOST"
+          
+          # Make deployment script executable
+          chmod +x scripts/deploy-remote.sh
+          
+          # Run deployment
           ./scripts/deploy-remote.sh $SERVER_HOST $SERVER_USER $SSL_PASSPHRASE
         else
           echo "⚠️  Automated deployment skipped - SSH secrets not configured"
@@ -134,13 +136,10 @@ jobs:
           echo ""
           echo "Manual deployment options:"
           echo "1. SSH to remote server and docker pull + restart:"
-          echo "   ssh $SERVER_USER@$SERVER_HOST"
-          echo "   cd /opt/http-search"
-          echo "   docker pull ghcr.io/${{ github.repository }}:latest"
-          echo "   docker-compose -f DOCKER/docker-compose.yml up -d"
+          echo "   ssh admin@[your-server] 'cd /opt/http-search && docker pull ghcr.io/${{ github.repository }}:latest && docker-compose -f DOCKER/docker-compose.yml up -d'"
           echo ""
           echo "2. Use the deployment script from your local machine:"
-          echo "   ./scripts/deploy-remote.sh base admin production123"
+          echo "   ./scripts/deploy-remote.sh [server-host] [user] [ssl-passphrase]"
           echo ""
           echo "3. Manual Docker commands:"
           echo "   docker run -d --name http-search-production \\"
@@ -150,4 +149,7 @@ jobs:
           echo "     -e PFX_PATH=/app/certs/production.p12 \\"
           echo "     -e SSL_PASSPHRASE=your-password \\"
           echo "     ghcr.io/${{ github.repository }}:latest"
+          echo ""
+          echo "✅ Docker image successfully built and pushed to:"
+          echo "   ghcr.io/${{ github.repository }}:latest"
         fi
