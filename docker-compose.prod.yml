@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  http-search-app:
+    image: ghcr.io/mikeb007/http-search:latest
+    container_name: http-search-production
+    restart: unless-stopped
+    ports:
+      - "80:8080"    # HTTP redirect
+      - "443:8443"   # HTTPS main port
+    environment:
+      - NODE_ENV=production
+      - PFX_PATH=/app/certs/production.p12
+      - SSL_PASSPHRASE=${SSL_PASSPHRASE:-production123}
+    volumes:
+      # Mount production certificates
+      - ./certs:/app/certs:ro
+      # Mount logs for monitoring
+      - ./logs:/app/logs
+      # Optional: mount custom configuration
+      - ./config:/app/config:ro
+    networks:
+      - http-search-network
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('https').get('https://localhost:8443', {rejectUnauthorized: false}, (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1));"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: '0.5'
+        reservations:
+          memory: 256M
+          cpus: '0.25'
+
+networks:
+  http-search-network:
+    driver: bridge
+
+volumes:
+  app-data:
