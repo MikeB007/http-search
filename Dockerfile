@@ -45,9 +45,6 @@ RUN mkdir -p /app/certs && chown nextjs:nodejs /app/certs
 # Switch to non-root user
 USER nextjs
 
-# Generate SSL certificates on container startup
-RUN node scripts/setup-certificates.js
-
 # Expose ports
 EXPOSE 8080 8443
 
@@ -55,5 +52,5 @@ EXPOSE 8080 8443
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
   CMD node -e "require('https').get('https://localhost:8443', {rejectUnauthorized: false}, (res) => { if (res.statusCode === 200) process.exit(0); else process.exit(1); }).on('error', () => process.exit(1));"
 
-# Start the application
-CMD ["node", "server.js"]
+# Generate SSL certificates and start the application
+CMD ["sh", "-c", "node scripts/setup-certificates.js || echo 'Certificate generation failed, continuing...'; node server.js"]

@@ -180,7 +180,14 @@ function createEnvironmentFile() {
   const envPath = path.join(__dirname, '..', '.env.example');
   const hosts = getCertificateHosts();
   
-  const envContent = `# HTTP Search Application Configuration
+  // Skip .env.example creation in Docker container or if we don't have write permissions
+  if (isDocker) {
+    console.log('🐳 Skipping .env.example creation in Docker container');
+    return;
+  }
+  
+  try {
+    const envContent = `# HTTP Search Application Configuration
 
 # SSL Certificate Settings
 PFX_PATH=./certs/production.p12
@@ -198,8 +205,11 @@ INTERNAL_IP=${process.env.INTERNAL_IP || ''}
 # Valid certificate hosts: ${hosts.join(', ')}
 `;
 
-  fs.writeFileSync(envPath, envContent);
-  console.log('✓ Created .env.example file');
+    fs.writeFileSync(envPath, envContent);
+    console.log('✓ Created .env.example file');
+  } catch (error) {
+    console.log('⚠️  Could not create .env.example file (may not have write permissions)');
+  }
 }
 
 function showCompletionMessage() {
@@ -239,7 +249,14 @@ async function main() {
     ensureCertsDirectory();
     createDefaultCertificate();
     createEnvironmentFile();
-    showCompletionMessage();
+    
+    if (!isDocker) {
+      showCompletionMessage();
+    } else {
+      console.log('✓ Certificate setup completed for Docker container');
+      console.log(`✓ Certificate: ${path.join(CERT_DIR, 'production.p12')}`);
+      console.log(`✓ Password: ${CERT_PASSWORD}`);
+    }
     
     // Exit successfully
     process.exit(0);
@@ -248,15 +265,20 @@ async function main() {
     console.error('');
     console.error('❌ Certificate setup failed:');
     console.error(error.message);
-    console.error('');
-    console.error('💡 Troubleshooting steps:');
-    console.error('1. Ensure OpenSSL is installed');
-    console.error('2. On Windows, try running as administrator');
-    console.error('3. Check certificate directory permissions');
-    console.error('4. Verify environment variables are set correctly');
-    console.error('');
     
-    process.exit(1);
+    if (!isDocker) {
+      console.error('');
+      console.error('💡 Troubleshooting steps:');
+      console.error('1. Ensure OpenSSL is installed');
+      console.error('2. On Windows, try running as administrator');
+      console.error('3. Check certificate directory permissions');
+      console.error('4. Verify environment variables are set correctly');
+      console.error('');
+    }
+    
+    // In Docker, don't fail the build if certificate generation fails
+    // The server can still start with existing certificates or without HTTPS
+    process.exit(isDocker ? 0 : 1);
   }
 }
 
