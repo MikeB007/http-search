@@ -1,0 +1,35 @@
+# Manual Fix Commands - Copy and paste these one by one
+# Run each command in PowerShell as Administrator on your Windows base server
+
+# 1. Create directories
+New-Item -ItemType Directory -Force -Path "C:\opt\http-search\certs"
+New-Item -ItemType Directory -Force -Path "C:\opt\http-search\logs"
+Set-Location "C:\opt\http-search"
+
+# 2. Stop existing container (if any)
+docker stop http-search-production
+docker rm http-search-production
+
+# 3. Create SSL certificate
+$cert = New-SelfSignedCertificate -DnsName "base","localhost","192.168.86.40" -CertStoreLocation "cert:\LocalMachine\My" -KeyAlgorithm RSA -KeyLength 2048 -HashAlgorithm SHA256 -NotAfter (Get-Date).AddYears(1)
+$pw = ConvertTo-SecureString -String "production123" -Force -AsPlainText
+Export-PfxCertificate -Cert $cert -FilePath "C:\opt\http-search\certs\production.p12" -Password $pw
+
+# 4. Pull latest image
+docker pull ghcr.io/mikeb007/http-search:latest
+
+# 5. Start container with correct ports (8443 instead of 443)
+docker run -d --name http-search-production --restart unless-stopped -p 80:8080 -p 8443:8443 -e NODE_ENV=production -e PFX_PATH=/app/certs/production.p12 -e SSL_PASSPHRASE=production123 -e NODE_OPTIONS=--openssl-legacy-provider -v "C:\opt\http-search\certs:/app/certs:ro" -v "C:\opt\http-search\logs:/app/logs" ghcr.io/mikeb007/http-search:latest
+
+# 6. Configure firewall
+New-NetFirewallRule -DisplayName "HTTP Search - HTTP" -Direction Inbound -Protocol TCP -LocalPort 80 -Action Allow
+New-NetFirewallRule -DisplayName "HTTP Search - HTTPS" -Direction Inbound -Protocol TCP -LocalPort 8443 -Action Allow
+
+# 7. Check status
+docker ps
+docker logs http-search-production
+
+# 8. Test access (wait 30 seconds first)
+Start-Sleep 30
+[System.Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}
+Invoke-WebRequest -Uri "https://localhost:8443" -UseBasicParsing
