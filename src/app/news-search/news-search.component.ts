@@ -65,6 +65,19 @@ export class NewsSearchComponent implements OnInit, OnDestroy {
     this.searchText$.next(SearchTerm);
   }
 
+  onSearchInput(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.search(target.value);
+  }
+
+  getFavoriteIconPath(index: number): string {
+    return `assets/img/fav/${this.imageType[+this.heartImage[index]]}`;
+  }
+
+  getBackgroundColor(daysOld: number): string {
+    return this.backColor[daysOld];
+  }
+
   ngOnInit() {
     this.subscription = this.data.currentFontSize.subscribe(fSize => this.fSize = fSize)
     this.news$ = this.searchText$.pipe(

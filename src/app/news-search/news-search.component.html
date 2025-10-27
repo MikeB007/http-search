@@ -1,31 +1,50 @@
 
-<mat-form-field class="example-full-width" >
+<mat-form-field class="example-full-width">
   <mat-label>My Search</mat-label>
-  <input matInput placeholder="Type Keyword..." value="{{key}}" id="name" (keyup)="search($any($event.target).value)" (click)="handleFocus($event)">
-  <!--
-  <button
-  matSuffix
-  mat-icon-button
-  color="primary"
-  matTooltip="the number must be formatted in english"
-  matTooltipPosition="below">
-  <mat-icon>info</mat-icon>
-</button>
--->
+  <input matInput 
+         placeholder="Type Keyword..." 
+         [value]="key" 
+         id="newsSearch"
+         aria-label="Search news articles"
+         (input)="onSearchInput($event)" 
+         (click)="handleFocus($event)">
 </mat-form-field>
-<ul>
-  <li *ngFor="let N of news; let i = index">
-    <div id="bloc1" style="display: flex; align-items: center; gap: 5px;">
-      <a (click)="setFavourite(N.ID, i)">
-        <img src="{{'assets/img/fav/'+ imageType[+heartImage[i]]}}" alt="{{N.ID}}" style="background-color:{{backColor[N.DAYS_OLD]}};width:15px;height:15px;"/>
-      </a>
-      <div id="bloc2" *ngIf='N.DAYS_OLD==0'><img src="assets/img/new/new5.png" alt="NEW" style="width:35px;height:25px;"/></div>
-      <span class="source-info"><i>{{N.SRC}} - {{N.ARTICLE_DT}}- {{N.ARTICLE_TM}}</i></span>
+<ul class="news-list" role="list" aria-label="News articles">
+  <li *ngFor="let article of news; let i = index" 
+      class="news-item" 
+      role="listitem">
+    
+    <div class="news-item-header">
+      <button (click)="setFavourite(article.ID, i)" 
+              [attr.aria-label]="'Toggle favorite for article ' + article.ID"
+              class="favorite-btn">
+        <img [src]="getFavoriteIconPath(i)" 
+             [alt]="'Favorite status for article ' + article.ID"
+             class="favorite-icon"
+             [style.background-color]="getBackgroundColor(article.DAYS_OLD)"/>
+      </button>
+      
+      <div *ngIf="article.DAYS_OLD === 0" class="new-badge-container">
+        <img src="assets/img/new/new5.png" 
+             alt="NEW" 
+             class="new-badge"/>
+      </div>
+      
+      <span class="source-info">
+        <i>{{article.SRC}} - {{article.ARTICLE_DT}} - {{article.ARTICLE_TM}}</i>
+      </span>
     </div>
-<!--    <div [ngClass]="fsValue" ></div>-->
-    <div [ngClass]="fSize"><p><a target=_blank href={{N.ARTICLE_URL}}><div class="my-static-div" [innerHTML]='N.LABEL'></div></a></p>
+
+    <div class="news-content" [ngClass]="fSize">
+      <p>
+        <a [href]="article.ARTICLE_URL" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           [attr.aria-label]="'Read full article: ' + article.LABEL">
+          <div class="my-static-div" [innerHTML]="article.LABEL"></div>
+        </a>
+      </p>
     </div>
 
   </li>
-
 </ul>
